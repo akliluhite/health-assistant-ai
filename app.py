@@ -12,16 +12,15 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Medical Care Background Image Link URL mapping
-BACKGROUND_IMAGE_URL = "https://githubusercontent.com"
+# FIXED IMAGE SOURCE: High-reliability public URL designed for live web application background layering
+BACKGROUND_IMAGE_URL = "https://unsplash.com"
 
 # Premium Material UI Clinical CSS System with full-screen structural image layering
-# FIX: Doubled up the CSS curly braces to prevent Python f-string conflicts
 st.markdown(f"""
     <style>
     /* Full-Screen Structural Background Image configurations */
     .stApp {{
-        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url("{BACKGROUND_IMAGE_URL}");
+        background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), url("{BACKGROUND_IMAGE_URL}");
         background-size: cover !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
