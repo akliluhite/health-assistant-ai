@@ -3,36 +3,68 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
-# Configure the Streamlit page layout
-st.set_page_config(page_title="AI Medical Assistant", layout="centered")
+# Set a professional dashboard page layout
+st.set_page_config(
+    page_title="AI Medical Diagnostics Hub",
+    page_icon="🩺",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
-# Cache data loading and training to make the app incredibly fast
+# Inject Custom CSS for professional typography, clean spacing, and modern UI cards
+st.markdown("""
+    <style>
+    /* Main app background tracking */
+    .stApp {
+        background-color: #f8fafc;
+    }
+    /* Title styling */
+    h1 {
+        color: #1e293b !important;
+        font-family: 'Inter', sans-serif;
+        font-weight: 800 !important;
+        letter-spacing: -0.5px;
+    }
+    /* Subtitle styling */
+    .subtitle-text {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+    /* Custom Card for Results */
+    .result-card {
+        background-color: #ffffff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        border-left: 5px solid #3b82f6;
+        margin-top: 1.5rem;
+    }
+    /* Feature styling tweaks */
+    .stMultiSelect div[data-baseweb="select"] {
+        border-radius: 8px !important;
+        border-color: #cbd5e1 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Cache data loading and training structure
 @st.cache_resource
 def load_and_train_model():
-    # Fetch your original training file directly from your GitHub repository path
     data = pd.read_csv("Training.csv")
-
-    
-    # Remove unneeded empty tracking columns if present in the data structure
     if "Unnamed: 133" in data.columns:
         data = data.drop(columns=["Unnamed: 133"])
-        
-    # Isolate symptoms from the target illness label
     X = data.drop(columns=["prognosis"])
     y = data["prognosis"]
-    
-    # Train model directly on the server container
     model = RandomForestClassifier(random_state=42)
     model.fit(X.values, y)
-    
     return model, list(X.columns)
 
-# Safely extract your operational assets
 try:
     model, features = load_and_train_model()
     model_ready = True
 except Exception as e:
-    st.error("Could not find 'Training.csv' on your GitHub repository path. Please verify the file is uploaded to GitHub.")
+    st.error("❌ Could not load 'Training.csv' locally. Please verify your file setup.")
     model_ready = False
 
 # Mapping database tracking for predictions
@@ -80,19 +112,22 @@ DISEASE_INFO = {
     "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician"}
 }
 
-st.title("🩺 AI Health Diagnosis Assistant")
-st.write("Select your symptoms below to get an algorithmic prediction model evaluation.")
+# Header Section
+st.title("🩺 AI Health Diagnostics Assistant")
+st.markdown("<p class='subtitle-text'>Select symptoms below to query the machine learning classification model workflow.</p>", unsafe_allow_html=True)
 
 if model_ready:
-    # Process features into clean drop-down titles
     clean_features = [f.replace("_", " ").title() for f in features]
-    selected_clean = st.multiselect("Choose Symptoms:", clean_features)
+    
+    # Wrap input form elements in a clean visual container
+    with st.container():
+        selected_clean = st.multiselect("Identify Patient Symptoms:", clean_features, placeholder="Type or click to choose symptoms...")
+        submit_btn = st.button("Analyze Symptoms", type="primary", use_container_width=True)
 
-    if st.button("Predict Diagnosis", type="primary"):
+    if submit_btn:
         if not selected_clean:
             st.warning("Please select at least one symptom.")
         else:
-            # Build your binary evaluation vector input
             input_data = np.zeros(len(features))
             for clean_sym in selected_clean:
                 raw_name = clean_sym.lower().replace(" ", "_")
@@ -100,19 +135,28 @@ if model_ready:
                     idx = features.index(raw_name)
                     input_data[idx] = 1
             
-            # Predict the structural target string
+            # Predict core array targets safely
             prediction = model.predict([input_data])[0]
             
-            st.success(f"### Predicted Condition: **{prediction}**")
+            # Formulate layout using a custom styled box container
+            st.markdown(f"""
+                <div class="result-card">
+                    <h3 style="margin-top:0; color:#1e3a8a;">Analysis Results</h3>
+                    <p style="font-size: 1.15rem; color: #1e293b;">
+                        🎯 <strong>Predicted Condition:</strong> 
+                        <span style="color: #2563eb; font-weight: bold;">{prediction}</span>
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
             
-            # Surface mapped context variables from knowledge engine dictionary
+            # Display additional contextual data cleanly
             if prediction in DISEASE_INFO:
                 info = DISEASE_INFO[prediction]
-                st.info(f"**Description:** {info['desc']}")
-                st.warning(f"🎯 **Recommended Department:** You should consult a **{info['specialist']}**.")
+                st.info(f"📋 **Clinical Description:** {info['desc']}")
+                st.warning(f"🏢 **Recommended Specialist Routing:** Referral recommended to a **{info['specialist']}**.")
             else:
-                st.info("**Description:** Information profile pending expansion.")
-                st.warning("🎯 **Recommended Department:** Please consult a General Physician for primary routing.")
+                st.info("📋 **Clinical Description:** Information profile routing details pending.")
+                st.warning("🏢 **Recommended Specialist Routing:** Consultation with a General Physician recommended for base mapping verification.")
 
 st.markdown("---")
-st.caption("⚠️ **Educational Project Disclaimer:** This software functions strictly as a data-science exercise using training datasets. It does not replace professional medical evaluations, diagnoses, or clinical treatment plans.")
+st.caption("⚠️ **Educational Project Disclaimer:** This system functions strictly as a data-science exercise using training datasets. It does not replace professional medical evaluations, clinical triage plans, or medical advice.")
