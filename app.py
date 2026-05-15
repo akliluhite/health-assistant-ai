@@ -8,7 +8,7 @@ st.set_page_config(
     page_title="AI Healthcare System Portal",
     page_icon="🩺",
     layout="centered",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Custom High-Quality CSS Styling
@@ -74,7 +74,7 @@ st.markdown("""
         letter-spacing: 0.5px;
     }
     .metric-value {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         color: #0f172a;
         font-weight: 700;
         margin-top: 4px;
@@ -155,6 +155,11 @@ DISEASE_INFO = {
     "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician"}
 }
 
+# New Feature 1: Demographic Context Sidebar Panel
+st.sidebar.header("📋 Patient Demographic Registry")
+patient_age = st.sidebar.slider("Patient Age:", min_value=1, max_value=100, value=30)
+patient_gender = st.sidebar.selectbox("Biological Sex:", ["Male", "Female", "Other"])
+
 # Clean layout application presentation
 st.title("Clinical Diagnostic Interface")
 st.markdown("<div class='sub-heading'>Enter clinical symptom indicators below to query the prediction evaluation workspace.</div>", unsafe_allow_html=True)
@@ -162,7 +167,6 @@ st.markdown("<div class='sub-heading'>Enter clinical symptom indicators below to
 if model_ready:
     clean_features = [f.replace("_", " ").title() for f in features]
     
-    # Session state trick to manage clear layout button actions
     if "symptom_key" not in st.session_state:
         st.session_state.symptom_key = 0
 
@@ -173,9 +177,7 @@ if model_ready:
         key=f"symptoms_{st.session_state.symptom_key}"
     )
     
-    # Layout configuration grid columns
-    btn_col1, btn_col2 = st.columns([4, 1])
-    
+    btn_col1, btn_col2 = st.columns()
     with btn_col1:
         submit_btn = st.button("Run Diagnostic Analysis", type="primary", use_container_width=True)
     with btn_col2:
@@ -198,12 +200,12 @@ if model_ready:
             prediction_array = model.predict([input_data])
             prediction = str(prediction_array[0]).strip()
             
-            # Feature 1: Model Certainty Probability Array Scoring
+            # Model Certainty Score Calculations
             probabilities = model.predict_proba([input_data])[0]
             class_idx = np.where(model.classes_ == prediction)[0][0]
             confidence = probabilities[class_idx] * 100
             
-            # Feature 2: Dynamic Symptom Load Risk Tier Estimation Evaluation
+            # Symptom Load Risk Tier Estimation Evaluation
             symptom_count = len(selected_clean)
             if symptom_count <= 2:
                 risk_tier = "Low"
@@ -240,31 +242,81 @@ if model_ready:
                 """, unsafe_allow_html=True)
             
             # Render Core Medical Information Panels
+            desc_text = "Conditional indicator tracking profiles pending expansion."
+            spec_text = "Consultation with a General Physician recommended for base mapping verification."
+            
             if prediction in DISEASE_INFO:
-                info = DISEASE_INFO[prediction]
-                st.markdown(f"""
-                    <div class="info-box">
-                        <strong>Clinical Overview:</strong> {info['desc']}
-                    </div>
-                    <div class="info-box" style="border-left: 4px solid #f59e0b;">
-                        📍 <strong>Recommended Unit Routing:</strong> Referral recommended to <strong>{info['specialist']}</strong>.
-                    </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                    <div class="info-box">
-                        <strong>Clinical Overview:</strong> Conditional indicator tracking profiles pending expansion.
-                    </div>
-                """, unsafe_allow_html=True)
+                desc_text = DISEASE_INFO[prediction]["desc"]
+                spec_text = DISEASE_INFO[prediction]["specialist"]
+                
+            st.markdown(f"""
+                <div class="info-box">
+                    <strong>Clinical Overview:</strong> {desc_text}
+                </div>
+                <div class="info-box" style="border-left: 4px solid #f59e0b;">
+                    📍 <strong>Recommended Unit Routing:</strong> Referral recommended to <strong>{spec_text}</strong>.
+                </div>
+            """, unsafe_allow_html=True)
 
-            # Feature 3: Alternate Probability Classifier Analytics Charts Layout
+            # New Feature 2: Dynamic Age/Gender Prescription Contraindication Flags
+            if patient_age < 12 and "Reaction" in prediction:
+                st.error("🚨 **Pediatric Warning Indicator:** Selected profile markers display hyper-sensitivity indicators to conventional chemical therapies. Avoid self-treatment.")
+            elif patient_age > 65:
+                st.warning("⚠️ **Geriatric Metric Warning:** Clearance rates for primary drug pathways are slowed in patients over 65. Clinical review is advised.")
+
+            # Top Probable Variant Distributions Chart
             st.markdown("<br><h5>Top Probable Variant Distributions</h5>", unsafe_allow_html=True)
             top_indices = np.argsort(probabilities)[::-1][:3]
+            
+            chart_conditions = [model.classes_[i] for i in top_indices]
+            chart_scores = [probabilities[i] * 100 for i in top_indices]
+            
             chart_data = pd.DataFrame({
-                "Condition Class": [model.classes_[i] for i in top_indices],
-                "Confidence Match Score (%)": [probabilities[i] * 100 for i in top_indices]
+                "Condition Class": chart_conditions,
+                "Confidence Match Score (%)": chart_scores
             })
             st.bar_chart(chart_data, x="Condition Class", y="Confidence Match Score (%)", color="#0284c7")
+
+            # New Feature 3: Symptom Intersection Correlation Matrix Table Layout
+            st.markdown("<h5>Alternative Statistical Variant Index</h5>", unsafe_allow_html=True)
+            matrix_df = pd.DataFrame({
+                "Secondary Variant Condition": [model.classes_[i] for i in np.argsort(probabilities)[::-1][1:6]],
+                "Statistical Probability Match": [f"{probabilities[i] * 100:.2f}%" for i in np.argsort(probabilities)[::-1][1:6]]
+            })
+            st.dataframe(matrix_df, use_container_width=True, hide_index=True)
+
+            # New Feature 4: Automated Medical Summary Document Construction Report Downloader
+            report_content = f"""# AI CLINICAL PORTAL DIAGNOSTIC REPORT
+## CONFIDENTIAL WORKSPACE EVALUATION LOG
+
+### PATIENT REGISTRY DETAILS:
+- **Age:** {patient_age} Years Old
+- **Biological Sex:** {patient_gender}
+- **Symptom Load Present:** {symptom_count} indicators reported
+
+### LOGGED SYMPTOMS INVENTORY:
+{', '.join(selected_clean)}
+
+### CLASSIFIER INFERENCE ANALYTICS:
+- **Primary Predicted Target:** {prediction}
+- **Model Certainty Evaluation Matrix Score:** {confidence:.2f}%
+- **Inferred Case Severity Risk Level:** {risk_tier}
+
+### ROUTING & REFERRAL RECOMMENDATIONS:
+- **Clinical Overview:** {desc_text}
+- **Assigned Specialization Routing Pathway:** {spec_text}
+
+---
+*Disclaimer: This structured document constitutes an algorithmic software output tracking model. It contains zero certified medical metrics and must not substitute for authentic diagnostic consultation files.*
+"""
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.download_button(
+                label="📥 Download Clinical Summary Report File",
+                data=report_content,
+                file_name="AI_Diagnostic_Report.md",
+                mime="text/markdown",
+                use_container_width=True
+            )
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.caption("⚠️ **Educational Project Disclaimer:** This system functions strictly as a data-science exercise using training datasets. It does not replace professional medical evaluations, clinical triage plans, or medical advice.")
