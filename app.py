@@ -4,98 +4,96 @@ import numpy as np
 import time
 from sklearn.ensemble import RandomForestClassifier
 
-# Set a professional dashboard page layout
+# Set premium clinical flat minimalist page configurations
 st.set_page_config(
-    page_title="Advanced AI Medical Diagnostics Node",
+    page_title="AI Clinical Diagnostic Portal",
     page_icon="🏥",
     layout="centered",
     initial_sidebar_state="expanded"
 )
 
-# Premium Clinical White & Deep Slate CSS Styling
+# Premium Material UI Clinical CSS System
 st.markdown("""
     <style>
-    /* Clean Solid White App Background */
+    /* Clean Minimal Soft Off-White Application Canvas */
     .stApp {
-        background-color: #ffffff !important;
-        color: #1e293b !important;
+        background-color: #fdfdfd !important;
+        color: #334155 !important;
     }
     
-    /* Clean Deep Slate Typography Headers */
+    /* Modern Slate Primary Headers */
     h1, h2, h3, h4, h5, h6 {
-        color: #0f172a !important;
-        font-family: 'Inter', -apple-system, sans-serif;
-        font-weight: 700 !important;
-        letter-spacing: -0.5px;
+        color: #1e293b !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-weight: 600 !important;
+        letter-spacing: -0.25px;
     }
     
-    /* Clear Subtitle Description Text styling */
+    /* Sub-heading typography normalization */
     .sub-heading {
-        color: #475569 !important;
-        font-size: 1.05rem;
-        margin-bottom: 2.5rem;
-        font-weight: 400;
+        color: #64748b !important;
+        font-size: 1rem;
+        margin-bottom: 2rem;
         line-height: 1.5;
     }
     
-    /* Sidebar Styling Configuration */
+    /* Slate Grey Minimalist Sidebar */
     section[data-testid="stSidebar"] {
         background-color: #f8fafc !important;
         border-right: 1px solid #e2e8f0;
     }
     section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] p {
-        color: #334155 !important;
-        font-weight: 600;
+        color: #475569 !important;
+        font-weight: 500;
     }
 
-    /* Core Symptom Form White Block Container Box */
+    /* Flat Shadowless Input Workspace Board Container */
     div[data-testid="stVerticalBlock"] > div:has(div.stMultiSelect) {
         background: #ffffff !important;
-        padding: 35px !important;
+        padding: 30px !important;
         border-radius: 12px !important;
         border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
     }
 
-    /* Solid Slate Blue Primary Action Button Styling */
+    /* Flat Teal Interactive Action Trigger Button Styling */
     .stButton>button[data-testid="baseButton-primary"] {
-        background-color: #1e3a8a !important;
+        background-color: #0f766e !important;
         color: #ffffff !important;
         border-radius: 6px !important;
         border: none !important;
-        padding: 14px 28px !important;
-        font-weight: 600 !important;
-        box-shadow: none !important;
-        transition: background-color 0.2s ease;
+        padding: 12px 24px !important;
+        font-weight: 500 !important;
+        transition: background-color 0.15s ease;
     }
     .stButton>button[data-testid="baseButton-primary"]:hover {
-        background-color: #1d4ed8 !important;
+        background-color: #115e59 !important;
     }
     
-    /* Minimalist Output Display Metric Cards */
+    /* Clean White Metric Component Blocks */
     .clinical-metric {
-        background-color: #f8fafc;
+        background-color: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 20px;
+        border-radius: 10px;
+        padding: 18px;
         margin-top: 15px;
-        border-top: 4px solid #1e3a8a;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.01);
     }
     .clinical-label {
         font-size: 0.75rem;
         color: #64748b;
         text-transform: uppercase;
-        font-weight: 700;
-        letter-spacing: 1px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
     }
     .clinical-value {
-        font-size: 1.25rem;
-        color: #0f172a;
-        font-weight: 700;
+        font-size: 1.2rem;
+        color: #1e293b;
+        font-weight: 600;
         margin-top: 4px;
     }
     
-    /* General Informational Output Alert Blocks */
+    /* General Flat Content Information Bins */
     .clinical-info-bin {
         background-color: #f8fafc;
         border: 1px solid #e2e8f0;
@@ -104,17 +102,9 @@ st.markdown("""
         margin-top: 12px;
         color: #334155;
         font-size: 0.95rem;
-        line-height: 1.6;
+        line-height: 1.5;
     }
     </style>
-""", unsafe_allow_html=True)
-
-# CSS-based Corporate Medical Header Box (No hard gradients, solid clinical blue tone)
-st.markdown("""
-    <div style="background-color: #0f172a; padding: 30px; border-radius: 8px; text-align: left; margin-bottom: 25px;">
-        <h2 style="color: #ffffff; margin: 0; font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 700;">🏥 Clinical Informatics Intelligence Center</h2>
-        <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 0.9rem; font-weight: 400; letter-spacing: 0.5px;">Machine Learning Statistical Inference Gateway</p>
-    </div>
 """, unsafe_allow_html=True)
 
 # Cache data loading and training structure
@@ -197,16 +187,17 @@ if "history_log" not in st.session_state:
     st.session_state.history_log = []
 
 # Patient Registry Demographic Sidebar Panel Configuration
-st.sidebar.header("📋 Patient Profile Registry")
+st.sidebar.header("Patient Entry Profiles")
 patient_age = st.sidebar.slider("Patient Age:", min_value=1, max_value=100, value=30)
 patient_gender = st.sidebar.selectbox("Biological Sex:", ["Male", "Female", "Other"])
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("⏳ Case Timeline Severity")
+st.sidebar.subheader("Case Duration Matrix")
 symptom_duration = st.sidebar.selectbox("Symptoms Persisting For:", ["Less than 24 Hours", "1 to 3 Days", "More than a Week"])
 
-st.title("AI Clinical Diagnosis Portal")
-st.markdown("<div class='sub-heading'>Isolate observed physiological indicator configurations to evaluate classifier prediction vectors.</div>", unsafe_allow_html=True)
+# Workspace Title Headers
+st.title("AI Clinical Diagnosis Node")
+st.markdown("<div class='sub-heading'>Isolate specific patient symptom indicators to compute machine learning probability classification paths.</div>", unsafe_allow_html=True)
 
 if model_ready:
     clean_features = [f.replace("_", " ").title() for f in features]
@@ -217,13 +208,13 @@ if model_ready:
     selected_clean = st.multiselect(
         "Identify Patient Manifestations:", 
         clean_features, 
-        placeholder="Search specific indicator rows...",
+        placeholder="Filter available indicator variables...",
         key=f"symptoms_{st.session_state.symptom_key}"
     )
     
     btn_col1, btn_col2 = st.columns(2)
     with btn_col1:
-        submit_btn = st.button("Execute Inference Matrix", type="primary", use_container_width=True)
+        submit_btn = st.button("Run Diagnostic Analysis", type="primary", use_container_width=True)
     with btn_col2:
         if st.button("Clear Input Node", use_container_width=True):
             st.session_state.symptom_key += 1
@@ -231,7 +222,7 @@ if model_ready:
 
     if submit_btn:
         if not selected_clean:
-            st.warning("Please isolate structural manifestation vectors inside the multi-select workspace node first.")
+            st.warning("Please isolate manifestation variables inside the selector tool before continuing.")
         else:
             start_latency_time = time.perf_counter()
             
@@ -259,14 +250,14 @@ if model_ready:
 
             bytes_symptom_count = len(selected_clean)
             if bytes_symptom_count <= 2 and "Week" not in symptom_duration:
-                risk_tier = "Mild"
-                risk_color = "#1e3a8a"
+                risk_tier = "Mild Case Load"
+                risk_color = "#0f766e"
             elif bytes_symptom_count <= 5 and "Week" not in symptom_duration:
-                risk_tier = "Moderate"
-                risk_color = "#f59e0b"
+                risk_tier = "Moderate Case Load"
+                risk_color = "#d97706"
             else:
-                risk_tier = "Urgent / Elevated"
-                risk_color = "#ef4444"
+                risk_tier = "Urgent Intervention Needed"
+                risk_color = "#dc2626"
 
             # Log record into memory array
             st.session_state.history_log.append({
@@ -280,26 +271,26 @@ if model_ready:
             with col_m1:
                 st.markdown(f"""
                     <div class="clinical-metric">
-                        <div class="clinical-label">Inferred Classification</div>
-                        <div class="clinical-value" style="color: #1e3a8a;">{prediction}</div>
+                        <div class="clinical-label">Primary Diagnostic Target</div>
+                        <div class="clinical-value" style="color: #0f766e;">{prediction}</div>
                     </div>
                 """, unsafe_allow_html=True)
             with col_m2:
                 st.markdown(f"""
-                    <div class="clinical-metric" style="border-top-color: #475569;">
-                        <div class="clinical-label">Model Certitude</div>
+                    <div class="clinical-metric">
+                        <div class="clinical-label">Model Certitude Score</div>
                         <div class="clinical-value" style="color: #475569;">{confidence:.1f}%</div>
                     </div>
                 """, unsafe_allow_html=True)
             with col_m3:
                 st.markdown(f"""
-                    <div class="clinical-metric" style="border-top-color: {risk_color};">
-                        <div class="clinical-label">Triage Priority Status</div>
-                        <div class="clinical-value" style="color: {risk_color}; font-size:1.15rem;">{risk_tier}</div>
+                    <div class="clinical-metric">
+                        <div class="clinical-label">Triage Priority Priority</div>
+                        <div class="clinical-value" style="color: {risk_color}; font-size:1.1rem;">{risk_tier}</div>
                     </div>
                 """, unsafe_allow_html=True)
             
-            st.markdown(f"<p style='color: #64748b; font-size: 0.85rem; margin-top: 10px; text-align: right;'>⏱️ Pipeline processing latency: {processing_latency:.3f} ms</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color: #94a3b8; font-size: 0.8rem; margin-top: 10px; text-align: right;'>⏱️ Processing pipeline speed metric: {processing_latency:.3f} ms</p>", unsafe_allow_html=True)
             
             desc_text = "Conditional indicator profiles pending engine knowledge base extension."
             spec_text = "General Physician"
@@ -312,26 +303,26 @@ if model_ready:
                     treatment_advice = DISEASE_INFO[prediction]["treatment"]
                 
             st.markdown(f"""
-                <div class="clinical-info-bin" style="border-left: 4px solid #475569;">
-                    <strong>Medical Condition Overview:</strong> {desc_text}
+                <div class="clinical-info-bin">
+                    <strong>Medical Pathogen Overview:</strong> {desc_text}
                 </div>
-                <div class="clinical-info-bin" style="border-left: 4px solid #f59e0b; background-color: #fafaf9;">
-                    📍 <strong>Assigned Clinical Routing Vector:</strong> Referral recommended to a <strong>{spec_text}</strong>.
+                <div class="clinical-info-bin" style="background-color: #fafafa;">
+                    📍 <strong>Recommended Specialist Directive:</strong> Referral directed towards a <strong>{spec_text}</strong>.
                 </div>
-                <div class="clinical-info-bin" style="border-left: 4px solid #1e3a8a; background-color: #fafaf9;">
-                    🛡️ <strong>First-Line General Guidance Measures:</strong> {treatment_advice}
+                <div class="clinical-info-bin" style="background-color: #fafafa;">
+                    🛡️ <strong>Initial General Management Measures:</strong> {treatment_advice}
                 </div>
             """, unsafe_allow_html=True)
 
             # Facility Department Referral Finder Output
-            st.markdown("<br><h5 style='color: #0f172a;'>🏢 Facility Department Referral Finder</h5>", unsafe_allow_html=True)
+            st.markdown("<br><h5>🏢 Facility Care Unit Referral Finder</h5>", unsafe_allow_html=True)
             if spec_text in HOSPITAL_DIRECTORY:
                 dir_info = HOSPITAL_DIRECTORY[spec_text]
                 st.markdown(f"""
-                    <div class="clinical-info-bin" style="border: 1px solid #cbd5e1; background-color: #ffffff; margin-top: 5px;">
-                        🏢 <strong>Target Hospital Unit:</strong> {dir_info['dept']}<br>
-                        📍 <strong>Internal Facility Location:</strong> {dir_info['floor']}<br>
-                        📞 <strong>Direct Contact Hotline Routing:</strong> <span style="color: #1e3a8a; font-weight: bold;">{dir_info['hotline']}</span>
+                    <div class="clinical-info-bin" style="background-color: #ffffff; margin-top: 5px;">
+                        🏢 <strong>Target Department:</strong> {dir_info['dept']}<br>
+                        📍 <strong>Internal Clinic Wing:</strong> {dir_info['floor']}<br>
+                        📞 <strong>Direct Unit Contact Line:</strong> <span style="color: #0f766e; font-weight: bold;">{dir_info['hotline']}</span>
                     </div>
                 """, unsafe_allow_html=True)
             else:
@@ -342,17 +333,17 @@ if model_ready:
             elif patient_age > 65:
                 st.warning("⚠️ **Geriatric Metric Warning:** Clearance rates for primary drug pathways are slowed in patients over 65. Clinical review is advised.")
 
-            st.markdown("<br><h5 style='color: #0f172a;'>Statistical Secondary Variant Analysis</h5>", unsafe_allow_html=True)
+            st.markdown("<br><h5>Secondary Statistical Variant Distributions</h5>", unsafe_allow_html=True)
             top_indices = np.argsort(probabilities)[::-1][:3]
             chart_data = pd.DataFrame({
-                "Condition Vector Class": [classes[i] for i in top_indices],
+                "Condition Classes": [classes[i] for i in top_indices],
                 "Confidence Match Score (%)": [probabilities[i] * 100 for i in top_indices]
             })
-            st.bar_chart(chart_data, x="Condition Vector Class", y="Confidence Match Score (%)", color="#1e3a8a")
+            st.bar_chart(chart_data, x="Condition Classes", y="Confidence Match Score (%)", color="#0f766e")
 
             secondary_indices = np.argsort(probabilities)[::-1][1:6]
             matrix_df = pd.DataFrame({
-                "Alternative Target Conditions": [classes[i] for i in secondary_indices],
+                "Alternative Diagnostic Targets": [classes[i] for i in secondary_indices],
                 "Statistical Probability Match": [f"{probabilities[i] * 100:.2f}%" for i in secondary_indices]
             })
             st.dataframe(matrix_df, use_container_width=True, hide_index=True)
@@ -380,9 +371,9 @@ if model_ready:
                 use_container_width=True
             )
 
-    # Patient Session Lookup Log Table View Component
+    # Session Diagnostic History Audit Log component
     if st.session_state.history_log:
-        st.markdown("<br><h5 style='color: #0f172a;'>📜 Session Diagnostic History Audit Log</h5>", unsafe_allow_html=True)
+        st.markdown("<br><h5>📜 System Session Diagnostic Audit Logs</h5>", unsafe_allow_html=True)
         history_df = pd.DataFrame(st.session_state.history_log[::-1])
         st.dataframe(history_df, use_container_width=True, hide_index=True)
 
