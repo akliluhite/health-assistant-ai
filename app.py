@@ -43,8 +43,8 @@ st.markdown("""
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05) !important;
     }
 
-    /* Sleek Clean Button Override */
-    .stButton>button {
+    /* Sleek Clean Primary Button Override */
+    .stButton>button[data-testid="baseButton-primary"] {
         background-color: #0284c7 !important;
         color: white !important;
         border-radius: 8px !important;
@@ -53,7 +53,7 @@ st.markdown("""
         font-weight: 600 !important;
         transition: background 0.2s ease;
     }
-    .stButton>button:hover {
+    .stButton>button[data-testid="baseButton-primary"]:hover {
         background-color: #0369a1 !important;
     }
 
@@ -144,7 +144,7 @@ DISEASE_INFO = {
     "Heart attack": {"desc": "A medical emergency where blood flow to a part of the heart is blocked.", "specialist": "Cardiologist"},
     "Varicose veins": {"desc": "Gnarled, enlarged veins, most commonly appearing in the legs and feet.", "specialist": "Vascular Surgeon"},
     "Hypothyroidism": {"desc": "A condition in which the thyroid gland doesn't produce enough thyroid hormone.", "specialist": "Endocrinologist"},
-    "Hyperthyroidism": {"desc": "The overproduction of a hormone by the butterfly-shaped gland in the neck (thyroid).", "specialist": "Endocrinologist"},
+    "Hyperthyroidism": {"desc": "The overproduction of a hormone by the butterfly-shaped gland in the neck (the thyroid).", "specialist": "Endocrinologist"},
     "Hypoglycemia": {"desc": "An unsafe drop in blood sugar levels, common in diabetes management.", "specialist": "Endocrinologist"},
     "Osteoarthristis": {"desc": "A type of arthritis that occurs when flexible tissue at the ends of bones wears down.", "specialist": "Rheumatologist / Orthopedist"},
     "Arthritis": {"desc": "Inflammation of one or more joints, causing pain and stiffness.", "specialist": "Rheumatologist"},
@@ -162,8 +162,26 @@ st.markdown("<div class='sub-heading'>Enter clinical symptom indicators below to
 if model_ready:
     clean_features = [f.replace("_", " ").title() for f in features]
     
-    selected_clean = st.multiselect("Identify Observed Symptoms:", clean_features, placeholder="Type to filter symptoms...")
-    submit_btn = st.button("Run Diagnostic Analysis", use_container_width=True)
+    # Session state trick to manage clear layout button actions
+    if "symptom_key" not in st.session_state:
+        st.session_state.symptom_key = 0
+
+    selected_clean = st.multiselect(
+        "Identify Observed Symptoms:", 
+        clean_features, 
+        placeholder="Type to filter symptoms...",
+        key=f"symptoms_{st.session_state.symptom_key}"
+    )
+    
+    # Layout configuration grid columns
+    btn_col1, btn_col2 = st.columns([4, 1])
+    
+    with btn_col1:
+        submit_btn = st.button("Run Diagnostic Analysis", type="primary", use_container_width=True)
+    with btn_col2:
+        if st.button("Reset", use_container_width=True):
+            st.session_state.symptom_key += 1
+            st.rerun()
 
     if submit_btn:
         if not selected_clean:
@@ -176,18 +194,52 @@ if model_ready:
                     idx = features.index(raw_name)
                     input_data[idx] = 1
             
-            # Formulate raw tracking output arrays into clean localized parameters
+            # Predict core condition text
             prediction_array = model.predict([input_data])
             prediction = str(prediction_array[0]).strip()
             
-            # Minimalist clean typography cards for outputs
-            st.markdown(f"""
-                <div class="metric-box">
-                    <div class="metric-label">Algorithmic Diagnostic Output</div>
-                    <div class="metric-value">{prediction}</div>
-                </div>
-            """, unsafe_allow_html=True)
+            # Feature 1: Model Certainty Probability Array Scoring
+            probabilities = model.predict_proba([input_data])[0]
+            class_idx = np.where(model.classes_ == prediction)[0][0]
+            confidence = probabilities[class_idx] * 100
             
+            # Feature 2: Dynamic Symptom Load Risk Tier Estimation Evaluation
+            symptom_count = len(selected_clean)
+            if symptom_count <= 2:
+                risk_tier = "Low"
+                risk_color = "#10b981"
+            elif symptom_count <= 5:
+                risk_tier = "Moderate"
+                risk_color = "#f59e0b"
+            else:
+                risk_tier = "Elevated"
+                risk_color = "#ef4444"
+
+            # Display Key Metrics in side-by-side Columns
+            col_m1, col_m2, col_m3 = st.columns(3)
+            with col_m1:
+                st.markdown(f"""
+                    <div class="metric-box">
+                        <div class="metric-label">Primary Target</div>
+                        <div class="metric-value" style="color: #0284c7;">{prediction}</div>
+                    </div>
+                """, unsafe_allow_html=True)
+            with col_m2:
+                st.markdown(f"""
+                    <div class="metric-box" style="border-left-color: #10b981;">
+                        <div class="metric-label">Model Certainty</div>
+                        <div class="metric-value" style="color: #10b981;">{confidence:.1f}%</div>
+                    </div>
+                """, unsafe_allow_html=True)
+            with col_m3:
+                st.markdown(f"""
+                    <div class="metric-box" style="border-left-color: {risk_color};">
+                        <div class="metric-label">Symptom Load Tier</div>
+                        <div class="metric-value" style="color: {risk_color};">{risk_tier}</div>
+                    </div>
+                """, unsafe_allow_html=True)
+            
+            # Render Core Medical Information Panels
             if prediction in DISEASE_INFO:
                 info = DISEASE_INFO[prediction]
                 st.markdown(f"""
@@ -204,6 +256,15 @@ if model_ready:
                         <strong>Clinical Overview:</strong> Conditional indicator tracking profiles pending expansion.
                     </div>
                 """, unsafe_allow_html=True)
+
+            # Feature 3: Alternate Probability Classifier Analytics Charts Layout
+            st.markdown("<br><h5>Top Probable Variant Distributions</h5>", unsafe_allow_html=True)
+            top_indices = np.argsort(probabilities)[::-1][:3]
+            chart_data = pd.DataFrame({
+                "Condition Class": [model.classes_[i] for i in top_indices],
+                "Confidence Match Score (%)": [probabilities[i] * 100 for i in top_indices]
+            })
+            st.bar_chart(chart_data, x="Condition Class", y="Confidence Match Score (%)", color="#0284c7")
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.caption("⚠️ **Educational Project Disclaimer:** This system functions strictly as a data-science exercise using training datasets. It does not replace professional medical evaluations, clinical triage plans, or medical advice.")
