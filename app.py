@@ -275,7 +275,7 @@ if model_ready:
                 prediction = model.predict([input_vector])[0]
                 probabilities = model.predict_proba([input_vector])
                 class_idx = list(model.classes_).index(prediction)
-                confidence = probabilities[0][class_idx] * 100
+                confidence = probabilities[class_idx] * 100
 
             timestamp = time.strftime("%H:%M:%S")
             st.session_state.history_log.insert(0, {
