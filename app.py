@@ -104,12 +104,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# FIXED CORE VIEW CONTAINER: Standard horizontal width allocation rules applied directly
-st.image(
-    "https://unsplash.com",
-    width=700,
-    caption="Clinical Informatics Intelligence Workspace Monitoring Array"
-)
+# FIXED COMPONENT: Pure CSS Luxury Medical Dashboard Banner (No external links, cannot break)
+st.markdown("""
+    <div style="background: linear-gradient(135deg, #0f4c43 0%, #14b8a6 100%); padding: 35px; border-radius: 14px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(20, 184, 166, 0.15);">
+        <h2 style="color: #ffffff; margin: 0; font-family: 'Inter', sans-serif; font-size: 1.7rem; font-weight: 700;">🏥 Clinical Informatics Intelligence Center</h2>
+        <p style="color: #ccfbf1; margin: 6px 0 0 0; font-size: 0.95rem; font-weight: 400; letter-spacing: 0.5px;">Predictive Machine Learning Optimization Node</p>
+    </div>
+""", unsafe_allow_html=True)
 
 # Cache data loading and training structure
 @st.cache_resource
@@ -251,23 +252,23 @@ if model_ready:
             end_latency_time = time.perf_counter()
             processing_latency = (end_latency_time - start_latency_time) * 1000
 
-            symptom_count = len(selected_clean)
-            if symptom_count <= 2 and "Week" not in symptom_duration:
+            bytes_symptom_count = len(selected_clean)
+            if bytes_symptom_count <= 2 and "Week" not in symptom_duration:
                 risk_tier = "Mild"
                 risk_color = "#14b8a6"
-            elif symptom_count <= 5 and "Week" not in symptom_duration:
+            elif bytes_symptom_count <= 5 and "Week" not in symptom_duration:
                 risk_tier = "Moderate"
                 risk_color = "#f59e0b"
             else:
                 risk_tier = "Urgent / Elevated"
                 risk_color = "#ef4444"
 
-            # Log data history record into session state memory
+            # Log record into memory array
             st.session_state.history_log.append({
                 "Condition": prediction,
                 "Certainty": f"{confidence:.1f}%",
                 "Risk Level": risk_tier,
-                "Symptoms Count": symptom_count
+                "Symptoms Count": bytes_symptom_count
             })
 
             col_m1, col_m2, col_m3 = st.columns(3)
