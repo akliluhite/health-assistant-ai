@@ -5,9 +5,9 @@ import time
 import base64
 from sklearn.ensemble import RandomForestClassifier
 
-# =========================
-# PAGE CONFIGURATION
-# =========================
+# =========================================================
+# PAGE CONFIG
+# =========================================================
 st.set_page_config(
     page_title="AI Clinical Diagnostic Portal",
     page_icon="🏥",
@@ -15,126 +15,159 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# =========================
-# BACKGROUND IMAGE FUNCTION
-# =========================
+# =========================================================
+# LOAD BACKGROUND IMAGE
+# Put caregiver_bg.jpg in same folder as app.py
+# =========================================================
 def get_base64(file_path):
     with open(file_path, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
+        return base64.b64encode(f.read()).decode()
 
-# Put caregiver_bg.jpg in same folder as app.py
 img = get_base64("caregiver_bg.jpg")
 
-# =========================
-# PREMIUM UI CSS
-# =========================
+# =========================================================
+# CUSTOM CSS
+# =========================================================
 st.markdown(f"""
 <style>
 
-/* =========================
-   MAIN APP BACKGROUND
-========================= */
+/* =========================================================
+BACKGROUND IMAGE
+========================================================= */
 .stApp {{
     background:
         linear-gradient(
-            rgba(255,255,255,0.82),
-            rgba(255,255,255,0.82)
+            rgba(255,255,255,0.30),
+            rgba(255,255,255,0.30)
         ),
         url("data:image/jpg;base64,{img}");
 
     background-size: cover !important;
-    background-position: center !important;
+    background-position: center center !important;
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
-
-    color: #334155 !important;
 }}
 
-/* =========================
-   TYPOGRAPHY
-========================= */
-h1, h2, h3, h4, h5, h6 {{
-    color: #1e293b !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+/* REMOVE STREAMLIT WHITE LAYER */
+[data-testid="stAppViewContainer"] {{
+    background: transparent !important;
+}}
+
+.main .block-container {{
+    background: transparent !important;
+    padding-top: 2rem;
+}}
+
+/* =========================================================
+TYPOGRAPHY
+========================================================= */
+h1 {{
+    color: #172033 !important;
+    font-size: 3rem !important;
+    font-weight: 800 !important;
+}}
+
+h2, h3, h4, h5 {{
+    color: #172033 !important;
     font-weight: 700 !important;
-    letter-spacing: -0.25px;
 }}
 
 .sub-heading {{
-    color: #475569 !important;
-    font-size: 1rem;
+    color: #334155 !important;
+    font-size: 1.1rem;
     margin-bottom: 2rem;
-    line-height: 1.5;
     font-weight: 500;
 }}
 
-/* =========================
-   SIDEBAR
-========================= */
-section[data-testid="stSidebar"] {{
-    background: rgba(255,255,255,0.88) !important;
-    backdrop-filter: blur(12px);
-    border-right: 1px solid #e2e8f0;
-}}
+/* =========================================================
+HEADER CARD
+========================================================= */
+.header-card {{
+    background: rgba(255,255,255,0.80);
+    backdrop-filter: blur(6px);
 
-section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] p,
-section[data-testid="stSidebar"] div {{
-    color: #334155 !important;
-}}
-
-/* =========================
-   MAIN CONTAINER
-========================= */
-.main-card {{
-    background: rgba(255,255,255,0.90);
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
     padding: 30px;
+    border-radius: 20px;
+
     border: 1px solid rgba(255,255,255,0.4);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+
+    margin-bottom: 30px;
 }}
 
-/* =========================
-   BUTTONS
-========================= */
-.stButton>button {{
+/* =========================================================
+MAIN CARD
+========================================================= */
+.main-card {{
+    background: rgba(255,255,255,0.78);
+
+    backdrop-filter: blur(5px);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    border: 1px solid rgba(255,255,255,0.35);
+
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+
+    margin-bottom: 25px;
+}}
+
+/* =========================================================
+SIDEBAR
+========================================================= */
+section[data-testid="stSidebar"] {{
+    background: rgba(255,255,255,0.82) !important;
+
+    backdrop-filter: blur(8px);
+}}
+
+/* =========================================================
+BUTTONS
+========================================================= */
+.stButton > button {{
     width: 100%;
-    border-radius: 10px !important;
+    border-radius: 12px !important;
     border: none !important;
-    padding: 12px 18px !important;
-    font-weight: 600 !important;
+    padding: 12px 20px !important;
+    font-weight: 700 !important;
     transition: 0.3s;
 }}
 
-.stButton>button[data-testid="baseButton-primary"] {{
+.stButton > button[data-testid="baseButton-primary"] {{
     background: #0f766e !important;
     color: white !important;
 }}
 
-.stButton>button[data-testid="baseButton-primary"]:hover {{
+.stButton > button[data-testid="baseButton-primary"]:hover {{
     background: #115e59 !important;
     transform: translateY(-2px);
 }}
 
-.stButton>button:not([data-testid="baseButton-primary"]) {{
+.stButton > button:not([data-testid="baseButton-primary"]) {{
     background: #e2e8f0 !important;
-    color: #1e293b !important;
+    color: #172033 !important;
 }}
 
-/* =========================
-   METRIC CARDS
-========================= */
+/* =========================================================
+METRIC CARDS
+========================================================= */
 .clinical-metric {{
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(8px);
-    border-radius: 14px;
+    background: rgba(255,255,255,0.80);
+
+    backdrop-filter: blur(6px);
+
+    border-radius: 16px;
+
     padding: 20px;
-    border: 1px solid rgba(255,255,255,0.5);
+
+    border: 1px solid rgba(255,255,255,0.4);
+
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    margin-top: 15px;
+
+    margin-top: 10px;
 }}
 
 .clinical-label {{
@@ -147,78 +180,75 @@ section[data-testid="stSidebar"] div {{
 
 .clinical-value {{
     font-size: 1.2rem;
-    color: #1e293b;
-    font-weight: 700;
-    margin-top: 6px;
+    font-weight: 800;
+    margin-top: 5px;
+    color: #172033;
 }}
 
-/* =========================
-   INFO BOXES
-========================= */
+/* =========================================================
+INFO BOXES
+========================================================= */
 .clinical-info-bin {{
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(8px);
-    border-radius: 12px;
+    background: rgba(255,255,255,0.80);
+
+    backdrop-filter: blur(5px);
+
+    border-radius: 16px;
+
     padding: 18px;
-    border: 1px solid rgba(255,255,255,0.5);
+
+    border: 1px solid rgba(255,255,255,0.35);
+
     box-shadow: 0 4px 18px rgba(0,0,0,0.05);
-    margin-top: 14px;
+
+    margin-top: 15px;
+
     color: #334155;
+
     line-height: 1.6;
 }}
 
-/* =========================
-   HEADER CARD
-========================= */
-.header-card {{
-    background: rgba(255,255,255,0.90);
-    backdrop-filter: blur(10px);
-    padding: 28px;
-    border-radius: 18px;
-    margin-bottom: 25px;
-    border: 1px solid rgba(255,255,255,0.5);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-}}
-
-/* =========================
-   DATAFRAME
-========================= */
+/* =========================================================
+DATAFRAME
+========================================================= */
 [data-testid="stDataFrame"] {{
-    background: rgba(255,255,255,0.88);
-    border-radius: 12px;
+    background: rgba(255,255,255,0.82);
+    border-radius: 15px;
     overflow: hidden;
 }}
 
-/* =========================
-   SELECT BOX & MULTISELECT
-========================= */
+/* =========================================================
+MULTISELECT
+========================================================= */
 .stMultiSelect,
 .stSelectbox {{
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.7);
     border-radius: 10px;
 }}
 
 </style>
 """, unsafe_allow_html=True)
 
-# =========================
+# =========================================================
 # HEADER
-# =========================
+# =========================================================
 st.markdown("""
 <div class="header-card">
+
     <h2 style="color:#0f766e; margin-bottom:8px;">
         🏥 Clinical Informatics Intelligence Center
     </h2>
 
-    <p style="color:#475569; margin:0;">
+    <p style="color:#475569; margin:0; font-size:1rem;">
         Machine Learning Statistical Inference Gateway
     </p>
+
 </div>
 """, unsafe_allow_html=True)
 
-# =========================
-# MODEL LOADING
-# =========================
+# =========================================================
+# LOAD MODEL
+# =========================================================
 @st.cache_resource
 def load_and_train_model():
 
@@ -240,33 +270,34 @@ try:
     model_ready = True
 
 except Exception:
-    st.error("Training.csv not found.")
+    st.error("Training.csv file not found.")
     model_ready = False
 
-# =========================
-# SIMPLE DISEASE DATABASE
-# =========================
+# =========================================================
+# DISEASE INFO
+# =========================================================
 DISEASE_INFO = {
+
     "Fungal infection": {
-        "desc": "A skin condition caused by fungus.",
+        "desc": "A fungal skin infection affecting warm and moist areas.",
         "specialist": "Dermatologist",
-        "treatment": "Keep skin dry and use antifungal cream."
+        "treatment": "Keep skin dry and apply antifungal cream."
     },
 
     "Allergy": {
-        "desc": "Immune reaction caused by allergens.",
+        "desc": "Immune system reaction caused by allergens.",
         "specialist": "Allergist",
         "treatment": "Avoid allergens and use antihistamines."
     },
 
     "Diabetes ": {
-        "desc": "High blood sugar condition.",
+        "desc": "A disease causing high blood sugar levels.",
         "specialist": "Endocrinologist",
-        "treatment": "Monitor blood sugar and follow diet control."
+        "treatment": "Monitor blood sugar and follow proper diet."
     },
 
     "Migraine": {
-        "desc": "Neurological headache condition.",
+        "desc": "A neurological condition causing severe headaches.",
         "specialist": "Neurologist",
         "treatment": "Rest in dark rooms and avoid stress."
     },
@@ -278,22 +309,22 @@ DISEASE_INFO = {
     }
 }
 
-# =========================
+# =========================================================
 # SESSION STATE
-# =========================
+# =========================================================
 if "history_log" not in st.session_state:
     st.session_state.history_log = []
 
-# =========================
+# =========================================================
 # SIDEBAR
-# =========================
+# =========================================================
 st.sidebar.header("Patient Entry Profiles")
 
 patient_age = st.sidebar.slider(
     "Patient Age",
-    1,
-    100,
-    30
+    min_value=1,
+    max_value=100,
+    value=30
 )
 
 patient_gender = st.sidebar.selectbox(
@@ -312,20 +343,20 @@ symptom_duration = st.sidebar.selectbox(
     ]
 )
 
-# =========================
+# =========================================================
 # MAIN TITLE
-# =========================
+# =========================================================
 st.title("AI Clinical Diagnosis Portal")
 
 st.markdown("""
-<div class='sub-heading'>
+<div class="sub-heading">
 Isolate specific patient symptom indicators to compute machine learning prediction pathways.
 </div>
 """, unsafe_allow_html=True)
 
-# =========================
-# MAIN CONTENT
-# =========================
+# =========================================================
+# MAIN APP
+# =========================================================
 if model_ready:
 
     clean_features = [
@@ -354,18 +385,19 @@ if model_ready:
         )
 
     with col2:
-        if st.button("Clear Input Node"):
+        if st.button("Clear Input"):
             st.session_state.symptom_key += 1
             st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # =========================
+    # =========================================================
     # PREDICTION
-    # =========================
+    # =========================================================
     if submit_btn:
 
         if not selected_clean:
+
             st.warning("Please select symptoms.")
 
         else:
@@ -379,10 +411,13 @@ if model_ready:
                 raw_name = clean_sym.lower().replace(" ", "_")
 
                 if raw_name in features:
+
                     idx = features.index(raw_name)
+
                     input_matrix[0, idx] = 1
 
             prediction_raw = model.predict(input_matrix)
+
             prediction = str(prediction_raw[0]).strip()
 
             probabilities = model.predict_proba(input_matrix).flatten()
@@ -390,92 +425,119 @@ if model_ready:
             classes = [str(c).strip() for c in model.classes_]
 
             if prediction in classes:
+
                 class_idx = classes.index(prediction)
+
                 confidence = probabilities[class_idx] * 100
+
             else:
                 confidence = 0
 
             latency = (time.perf_counter() - start_time) * 1000
 
-            # =========================
-            # RISK LEVEL
-            # =========================
+            # =========================================================
+            # RISK
+            # =========================================================
             symptom_count = len(selected_clean)
 
             if symptom_count <= 2:
+
                 risk = "Mild"
                 risk_color = "#0f766e"
 
             elif symptom_count <= 5:
+
                 risk = "Moderate"
                 risk_color = "#d97706"
 
             else:
+
                 risk = "High Risk"
                 risk_color = "#dc2626"
 
-            # =========================
-            # HISTORY
-            # =========================
+            # =========================================================
+            # SAVE HISTORY
+            # =========================================================
             st.session_state.history_log.append({
                 "Condition": prediction,
                 "Confidence": f"{confidence:.1f}%",
                 "Risk": risk
             })
 
-            # =========================
+            # =========================================================
             # METRICS
-            # =========================
+            # =========================================================
             m1, m2, m3 = st.columns(3)
 
             with m1:
+
                 st.markdown(f"""
                 <div class="clinical-metric">
-                    <div class="clinical-label">Diagnosis</div>
+
+                    <div class="clinical-label">
+                        Diagnosis
+                    </div>
+
                     <div class="clinical-value" style="color:#0f766e;">
                         {prediction}
                     </div>
+
                 </div>
                 """, unsafe_allow_html=True)
 
             with m2:
+
                 st.markdown(f"""
                 <div class="clinical-metric">
-                    <div class="clinical-label">Confidence</div>
+
+                    <div class="clinical-label">
+                        Confidence
+                    </div>
+
                     <div class="clinical-value">
                         {confidence:.1f}%
                     </div>
+
                 </div>
                 """, unsafe_allow_html=True)
 
             with m3:
+
                 st.markdown(f"""
                 <div class="clinical-metric">
-                    <div class="clinical-label">Risk Level</div>
+
+                    <div class="clinical-label">
+                        Risk Level
+                    </div>
+
                     <div class="clinical-value" style="color:{risk_color};">
                         {risk}
                     </div>
+
                 </div>
                 """, unsafe_allow_html=True)
 
             st.markdown(
                 f"""
-                <p style='text-align:right;
-                          color:#475569;
-                          font-size:0.8rem;
-                          margin-top:10px;'>
+                <p style="
+                    text-align:right;
+                    color:#334155;
+                    font-size:0.85rem;
+                    margin-top:10px;
+                    font-weight:600;
+                ">
                     Inference Latency: {latency:.3f} ms
                 </p>
                 """,
                 unsafe_allow_html=True
             )
 
-            # =========================
+            # =========================================================
             # DISEASE INFO
-            # =========================
-            desc = "No description available."
+            # =========================================================
+            desc = "No information available."
             specialist = "General Physician"
-            treatment = "Consult doctor."
+            treatment = "Consult a doctor."
 
             if prediction in DISEASE_INFO:
 
@@ -485,24 +547,37 @@ if model_ready:
 
             st.markdown(f"""
             <div class="clinical-info-bin">
-                <strong>Medical Overview:</strong><br><br>
+
+                <strong>Medical Overview:</strong>
+
+                <br><br>
+
                 {desc}
+
             </div>
 
             <div class="clinical-info-bin">
+
                 👨‍⚕️ <strong>Recommended Specialist:</strong>
+
                 {specialist}
+
             </div>
 
             <div class="clinical-info-bin">
-                🛡️ <strong>Suggested First Aid / Care:</strong><br><br>
+
+                🛡️ <strong>Suggested Treatment:</strong>
+
+                <br><br>
+
                 {treatment}
+
             </div>
             """, unsafe_allow_html=True)
 
-            # =========================
+            # =========================================================
             # CHART
-            # =========================
+            # =========================================================
             st.markdown("### Prediction Statistics")
 
             top_indices = np.argsort(probabilities)[::-1][:3]
@@ -521,9 +596,9 @@ if model_ready:
                 y="Confidence (%)"
             )
 
-            # =========================
-            # TABLE
-            # =========================
+            # =========================================================
+            # OTHER PREDICTIONS
+            # =========================================================
             alt_indices = np.argsort(probabilities)[::-1][1:6]
 
             matrix_df = pd.DataFrame({
@@ -543,9 +618,9 @@ if model_ready:
                 hide_index=True
             )
 
-            # =========================
+            # =========================================================
             # REPORT DOWNLOAD
-            # =========================
+            # =========================================================
             report_content = f"""
 AI CLINICAL REPORT
 
@@ -579,9 +654,9 @@ Treatment:
                 use_container_width=True
             )
 
-# =========================
+# =========================================================
 # HISTORY
-# =========================
+# =========================================================
 if st.session_state.history_log:
 
     st.markdown("## 📜 Session History")
@@ -596,13 +671,12 @@ if st.session_state.history_log:
         hide_index=True
     )
 
-# =========================
+# =========================================================
 # FOOTER
-# =========================
+# =========================================================
 st.markdown("<br><br>", unsafe_allow_html=True)
 
 st.caption("""
 ⚠️ Educational Project Disclaimer:
-This AI system is for educational and research purposes only.
-It does not replace professional medical diagnosis or treatment.
+This system is for educational purposes only and does not replace professional medical diagnosis.
 """)
