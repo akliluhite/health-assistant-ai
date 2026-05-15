@@ -4,7 +4,7 @@ import numpy as np
 import time
 from sklearn.ensemble import RandomForestClassifier
 
-# Set premium clinical dark layout configuration metrics
+# Set layout configurations with a dedicated sidebar collapse feature
 st.set_page_config(
     page_title="AI Clinical Diagnostic Node",
     page_icon="🧬",
@@ -12,89 +12,91 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Premium Slate Dark Mode Theme Layer Injection
+# Custom Premium Skylight Theme Layer Injection
 st.markdown("""
     <style>
-    /* Main Dark View Frame Base */
+    /* Main Skylight View Frame Base */
     .stApp {
-        background-color: #0f172a !important;
-        color: #f8fafc !important;
+        background: linear-gradient(180deg, #e0f2fe 0%, #f8fafc 400px, #f8fafc 100%) !important;
+        color: #1e293b !important;
     }
     
     /* Clean Minimal Header Structure */
     h1 {
-        color: #38bdf8 !important;
+        color: #0369a1 !important;
         font-family: 'Segoe UI', sans-serif;
         font-weight: 800 !important;
         letter-spacing: -0.5px;
     }
     
     .sub-heading {
-        color: #94a3b8 !important;
+        color: #0284c7 !important;
         font-size: 1.05rem;
         margin-bottom: 2.5rem;
+        font-weight: 500;
     }
     
-    /* Sidebar styling overrides */
+    /* Sidebar styling overrides to fit skylight tone */
     section[data-testid="stSidebar"] {
-        background-color: #1e293b !important;
-        border-right: 1px solid #334155;
+        background-color: #f0f9ff !important;
+        border-right: 1px solid #bae6fd;
     }
     section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] p, section[data-testid="stSidebar"] label {
-        color: #f8fafc !important;
+        color: #0369a1 !important;
     }
 
     /* Core Input Panel Content Card Element Wrapper */
     div[data-testid="stVerticalBlock"] > div:has(div.stMultiSelect) {
-        background: #1e293b !important;
+        background: #ffffff !important;
         padding: 35px !important;
         border-radius: 16px !important;
-        border: 1px solid #334155 !important;
-        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3) !important;
+        border: 1px solid #bae6fd !important;
+        box-shadow: 0 10px 25px -5px rgba(3, 105, 161, 0.05) !important;
     }
 
     /* Primary Interactive Trigger Button Formatting */
     .stButton>button[data-testid="baseButton-primary"] {
-        background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%) !important;
+        background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
         color: #ffffff !important;
         border-radius: 8px !important;
         border: none !important;
         padding: 14px 28px !important;
         font-weight: 700 !important;
-        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
     }
     
     /* Premium Styled Output Display Metric Blocks */
     .clinical-metric {
-        background-color: #1e293b;
-        border: 1px solid #334155;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
         border-radius: 12px;
         padding: 22px;
         margin-top: 15px;
-        border-top: 4px solid #38bdf8;
+        border-top: 4px solid #0284c7;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
     .clinical-label {
         font-size: 0.8rem;
-        color: #94a3b8;
+        color: #64748b;
         text-transform: uppercase;
         font-weight: 700;
         letter-spacing: 0.75px;
     }
     .clinical-value {
         font-size: 1.35rem;
-        color: #ffffff;
+        color: #0f172a;
         font-weight: 700;
         margin-top: 6px;
     }
     
     /* General Text Information Callout Bins */
     .clinical-info-bin {
-        background-color: #111827;
-        border: 1px solid #334155;
+        background-color: #f8fafc;
+        border: 1px solid #cbd5e1;
         padding: 18px;
         border-radius: 10px;
         margin-top: 12px;
-        color: #cbd5e1;
+        color: #334155;
         font-size: 0.95rem;
         line-height: 1.5;
     }
@@ -138,31 +140,43 @@ DISEASE_INFO = {
     "Paralysis (brain hemorrhage)": {"desc": "Loss of muscle function in part of your body, caused by bleeding inside the brain tissue.", "specialist": "Neurologist / Neurosurgeon", "treatment": "Immediate emergency room evaluations required, establish supportive physical therapies."},
     "Jaundice": {"desc": "A yellowing of the skin and eyes caused by high levels of bilirubin.", "specialist": "Hepatologist / Gastroenterologist", "treatment": "Prioritize rest, eliminate completely all alcoholic pathways, monitor liver functions."},
     "Malaria": {"desc": "A disease caused by a plasmodium parasite, transmitted by the bite of infected mosquitoes.", "specialist": "Infectious Disease Specialist", "treatment": "Seek immediate antimalarial pharmacotherapy, monitor hydration levels carefully."},
-    "Chicken pox": {"desc": "A highly contagious viral infection causing an itchy, blister-like rash on the skin.", "specialist": "General Physician / Pediatrician"},
-    "Dengue": {"desc": "A mosquito-borne viral disease occurring in tropical and subtropical areas.", "specialist": "Infectious Disease Specialist"},
-    "Typhoid": {"desc": "A bacterial infection spread through contaminated food and water.", "specialist": "Infectious Disease Specialist"},
-    "hepatitis A": {"desc": "A highly contagious liver infection caused by the hepatitis A virus.", "specialist": "Hepatologist / Gastroenterologist"},
-    "Hepatitis B": {"desc": "A severe liver infection caused by the hepatitis B virus.", "specialist": "Hepatologist / Gastroenterologist"},
-    "Hepatitis C": {"desc": "An infection caused by a virus that attacks the liver and leads to inflammation.", "specialist": "Hepatologist / Gastroenterologist"},
-    "Hepatitis D": {"desc": "A serious liver disease caused by the hepatitis D virus, requiring concurrent Hepatitis B infection.", "specialist": "Hepatologist / Gastroenterologist"},
-    "Hepatitis E": {"desc": "A liver disease caused by the hepatitis E virus, mainly transmitted through contaminated drinking water.", "specialist": "Hepatologist / Gastroenterologist"},
-    "Alcoholic hepatitis": {"desc": "Liver inflammation caused by drinking too much alcohol.", "specialist": "Hepatologist / Gastroenterologist"},
-    "Tuberculosis": {"desc": "A serious infectious bacterial disease that mainly affects the lungs.", "specialist": "Pulmonologist"},
-    "Common Cold": {"desc": "A common viral infection of the nose and throat.", "specialist": "General Physician"},
-    "Pneumonia": {"desc": "An infection that inflames the air sacs in one or both lungs, which may fill with fluid.", "specialist": "Pulmonologist / General Physician"},
-    "Dimorphic hemmorhoids(piles)": {"desc": "Swollen and inflamed veins in the anus and lower rectum.", "specialist": "General Surgeon / Proctologist"},
-    "Heart attack": {"desc": "A medical emergency where blood flow to a part of the heart is blocked.", "specialist": "Cardiologist"},
-    "Varicose veins": {"desc": "Gnarled, enlarged veins, most commonly appearing in the legs and feet.", "specialist": "Vascular Surgeon"},
-    "Hypothyroidism": {"desc": "A condition in which the thyroid gland doesn't produce enough thyroid hormone.", "specialist": "Endocrinologist"},
-    "Hyperthyroidism": {"desc": "The overproduction of a hormone by the butterfly-shaped gland in the neck (the thyroid).", "specialist": "Endocrinologist"},
-    "Hypoglycemia": {"desc": "An unsafe drop in blood sugar levels, common in diabetes management.", "specialist": "Endocrinologist"},
-    "Osteoarthristis": {"desc": "A type of arthritis that occurs when flexible tissue at the ends of bones wears down.", "specialist": "Rheumatologist / Orthopedist"},
-    "Arthritis": {"desc": "Inflammation of one or more joints, causing pain and stiffness.", "specialist": "Rheumatologist"},
-    "(vertigo) Paroymsal  Positional Vertigo": {"desc": "A sensation of spinning caused by inner ear problems.", "specialist": "ENT Specialist / Neurologist"},
-    "Acne": {"desc": "A skin condition that occurs when hair follicles become plugged with oil and dead skin cells.", "specialist": "Dermatologist"},
-    "Urinary tract infection": {"desc": "An infection in any part of the urinary system, including kidneys, ureters, bladder, and urethra.", "specialist": "Urologist / General Physician"},
-    "Psoriasis": {"desc": "A condition in which skin cells build up and form scales and itchy, dry patches.", "specialist": "Dermatologist"},
-    "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician"}
+    "Chicken pox": {"desc": "A highly contagious viral infection causing an itchy, blister-like rash on the skin.", "specialist": "General Physician / Pediatrician", "treatment": "Rest, maintain clean skin, use anti-itch lotions, monitor internal body temperature flags."},
+    "Dengue": {"desc": "A mosquito-borne viral disease occurring in tropical and subtropical areas.", "specialist": "Infectious Disease Specialist", "treatment": "Maximize clean hydration intake profiles, take paracetamol for tracking pain, avoid ibuprofen options."},
+    "Typhoid": {"desc": "A bacterial infection spread through contaminated food and water.", "specialist": "Infectious Disease Specialist", "treatment": "Complete complete antibiotic prescription metrics, consume fully pasteurized foods."},
+    "Common Cold": {"desc": "A common viral infection of the nose and throat.", "specialist": "General Physician", "treatment": "Maintain vocal rest, ingest warm fluid configurations, track respiratory markers."},
+    "Pneumonia": {"desc": "An infection that inflames the air sacs in one or both lungs, which may fill with fluid.", "specialist": "Pulmonologist / General Physician", "treatment": "Follow structural antibiotic schedules, rest continuously, monitor blood oxygen metrics."},
+    "Heart attack": {"desc": "A medical emergency where blood flow to a part of the heart is blocked.", "specialist": "Cardiologist", "treatment": "Call global emergency response units instantly, chew emergency aspirin protocols."},
+    "Acne": {"desc": "A skin condition that occurs when hair follicles become plugged with oil and dead skin cells.", "specialist": "Dermatologist", "treatment": "Clean facial features gently using non-comedogenic elements, apply specialized skincare lines."},
+    "Urinary tract infection": {"desc": "An infection in any part of the urinary system, including kidneys, ureters, bladder, and urethra.", "specialist": "Urologist / General Physician", "treatment": "Increase internal water consumption limits, acquire target prescription treatments."},
+    "Psoriasis": {"desc": "A condition in which skin cells build up and form scales and itchy, dry patches.", "specialist": "Dermatologist", "treatment": "Apply thick emollient ointments, avoid extreme environment humidity shifts."},
+    "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician", "treatment": "Apply topical prescription medication arrays, sanitize clothing items separately."}
+}
+
+# Hospital Referral Directory Mapping Core Data
+HOSPITAL_DIRECTORY = {
+    "Dermatologist": {"dept": "Dermatology & Skin Sciences Clinic", "hotline": "+1 (555) 019-2831", "floor": "Building B, 3rd Floor"},
+    "Allergist / Immunologist": {"dept": "Allergy Research & Immunology Institute", "hotline": "+1 (555) 014-9922", "floor": "Main West Wing, 2nd Floor"},
+    "Gastroenterologist": {"dept": "Gastrointestinal Health & Endoscopy Lab", "hotline": "+1 (555) 017-8811", "floor": "Outpatient Pavilion, Ground Floor"},
+    "Hepatologist / Gastroenterologist": {"dept": "Advanced Liver & Hepatobiliary Care Center", "hotline": "+1 (555) 012-3344", "floor": "Medical Tower A, 4th Floor"},
+    "General Physician / Allergist": {"dept": "Family Medicine & Urgent Screening Facility", "hotline": "+1 (555) 011-5500", "floor": "Emergency Annex, Suite 10"},
+    "Infectious Disease Specialist": {"dept": "Specialized Pathogen & Infectious Management Wing", "hotline": "+1 (555) 016-7788", "floor": "Isolation Pavilion, Restricted Zone C"},
+    "Endocrinologist": {"dept": "Metabolic Disorders & Endocrinology Center", "hotline": "+1 (555) 015-4433", "floor": "Building C, 1st Floor"},
+    "Pulmonologist / Allergist": {"dept": "Respiratory & Asthma Critical Care Center", "hotline": "+1 (555) 018-2211", "floor": "Main Building, 5th Floor"},
+    "Cardiologist": {"dept": "Cardiovascular Sciences & Critical Intervention Center", "hotline": "+1 (555) 019-9900", "floor": "Cardiac Wing, Ground Floor Location"},
+    "Neurologist": {"dept": "Neurological Assessment & Stroke Evaluation Lab", "hotline": "+1 (555) 013-1122", "floor": "Neuro-Sciences Block, 3rd Floor"},
+    "Orthopedic Surgeon / Neurologist": {"dept": "Spinal Health & Orthopedic Rehabilitation Unit", "hotline": "+1 (555) 014-5544", "floor": "West Wing, Ground Floor Annex"},
+    "Neurologist / Neurosurgeon": {"dept": "Neuro-Trauma & Comprehensive Stroke Center", "hotline": "+1 (555) 012-8877", "floor": "Neuro Intensive Care Unit, 2nd Floor"},
+    "General Physician / Pediatrician": {"dept": "Family & Pediatric Care Clinic", "hotline": "+1 (555) 017-3311", "floor": "Building B, 1st Floor"},
+    "Pulmonologist": {"dept": "Advanced Thoracic Disease & Pulmonology Unit", "hotline": "+1 (555) 016-1155", "floor": "Main Building, 4th Floor Wing"},
+    "General Physician": {"dept": "Primary Health Assessment Portal", "hotline": "+1 (555) 011-2233", "floor": "Main Entry Lounge, Room 101"},
+    "Pulmonologist / General Physician": {"dept": "Acute Respiratory Evaluation Unit", "hotline": "+1 (555) 018-4455", "floor": "Main Tower, 5th Floor East"},
+    "General Surgeon / Proctologist": {"dept": "Colorectal Health & General Surgical Suites", "hotline": "+1 (555) 013-6677", "floor": "Surgical Pavilion, 2nd Floor"},
+    "Vascular Surgeon": {"dept": "Vascular Anomalies & Venous Circulatory Clinic", "hotline": "+1 (555) 015-9988", "floor": "Building A, Suite 4B"},
+    "Rheumatologist / Orthopedist": {"dept": "Joint Inflammation & Rheumatology Center", "hotline": "+1 (555) 014-2200", "floor": "Outpatient Pavilion, 2nd Floor"},
+    "Rheumatologist": {"dept": "Autoimmune & Clinical Rheumatology Center", "hotline": "+1 (555) 014-7766", "floor": "Building C, 2nd Floor Suite"},
+    "ENT Specialist / Neurologist": {"dept": "Vestibular Disorders & Otolaryngology Unit", "hotline": "+1 (555) 016-8899", "floor": "Main Building, 2nd Floor North"},
+    "Urologist / General Physician": {"dept": "Renal Health & Comprehensive Urology Clinic", "hotline": "+1 (555) 012-4411", "floor": "Medical Tower B, Ground Floor Annex"},
+    "Dermatologist / General Physician": {"dept": "Acute Skin Lesion & Dermatology Unit", "hotline": "+1 (555) 019-3322", "floor": "Building B, 3rd Floor East"}
 }
 
 # Patient Registry Demographic Sidebar Panel Configuration
@@ -170,7 +184,6 @@ st.sidebar.header("📋 Patient Profile Registry")
 patient_age = st.sidebar.slider("Patient Age:", min_value=1, max_value=100, value=30)
 patient_gender = st.sidebar.selectbox("Biological Sex:", ["Male", "Female", "Other"])
 
-# Feature 2: Severity Multi-Class Indicator Modification Dropdowns
 st.sidebar.markdown("---")
 st.sidebar.subheader("⏳ Case Timeline Severity")
 symptom_duration = st.sidebar.selectbox("Symptoms Persisting For:", ["Less than 24 Hours", "1 to 3 Days", "More than a Week"])
@@ -203,7 +216,6 @@ if model_ready:
         if not selected_clean:
             st.warning("Please isolate structural manifestation vectors inside the multi-select workspace node first.")
         else:
-            # Feature 4: Model Compute Latency Start Tracker
             start_latency_time = time.perf_counter()
             
             input_matrix = np.zeros((1, len(features)))
@@ -213,7 +225,6 @@ if model_ready:
                     idx = features.index(raw_name)
                     input_matrix[0, idx] = 1
             
-            # Formulate 2D target metrics
             prediction_raw = model.predict(input_matrix)
             prediction = str(prediction_raw[0]).strip()
             
@@ -226,11 +237,9 @@ if model_ready:
             else:
                 confidence = 0.0
                 
-            # Model Compute Latency Finish Evaluation 
             end_latency_time = time.perf_counter()
             processing_latency = (end_latency_time - start_latency_time) * 1000
 
-            # Scale risk profiles dynamically against symptom load and user timeline context
             symptom_count = len(selected_clean)
             if symptom_count <= 2 and "Week" not in symptom_duration:
                 risk_tier = "Mild"
@@ -240,15 +249,14 @@ if model_ready:
                 risk_color = "#f59e0b"
             else:
                 risk_tier = "Urgent / Elevated"
-                risk_color = "#f43f5e"
+                risk_color = "#ef4444"
 
-            # Render Primary Visual Dash Blocks
             col_m1, col_m2, col_m3 = st.columns(3)
             with col_m1:
                 st.markdown(f"""
                     <div class="clinical-metric">
                         <div class="clinical-label">Inferred Classification</div>
-                        <div class="clinical-value" style="color: #38bdf8;">{prediction}</div>
+                        <div class="clinical-value" style="color: #0284c7;">{prediction}</div>
                     </div>
                 """, unsafe_allow_html=True)
             with col_m2:
@@ -262,16 +270,14 @@ if model_ready:
                 st.markdown(f"""
                     <div class="clinical-metric" style="border-top-color: {risk_color};">
                         <div class="clinical-label">Triage Priority Status</div>
-                        <div class="clinical-value" style="color: {risk_color};">{risk_tier}</div>
+                        <div class="metric-value" style="color: {risk_color}; font-size:1.25rem; font-weight:700; margin-top:6px;">{risk_tier}</div>
                     </div>
                 """, unsafe_allow_html=True)
             
-            # Display Compute Latency Metrics
             st.markdown(f"<p style='color: #64748b; font-size: 0.85rem; margin-top: 10px; text-align: right;'>⏱️ Pipeline processing latency: {processing_latency:.3f} ms</p>", unsafe_allow_html=True)
             
-            # Fetch dictionary info values cleanly
             desc_text = "Conditional indicator profiles pending engine knowledge base extension."
-            spec_text = "Consultation with a General Medicine department lead is recommended for initial validation routing."
+            spec_text = "General Physician"
             treatment_advice = "Follow baseline supportive home care directives, monitor condition progression metrics, rest appropriately."
             
             if prediction in DISEASE_INFO:
@@ -284,26 +290,34 @@ if model_ready:
                 <div class="clinical-info-bin">
                     <strong>Medical Condition Overview:</strong> {desc_text}
                 </div>
-                <div class="clinical-info-bin" style="border-left: 4px solid #f59e0b;">
+                <div class="clinical-info-bin" style="border-left: 4px solid #f59e0b; background-color: #fffbeb;">
                     📍 <strong>Assigned Clinical Routing Vector:</strong> Referral recommended to a <strong>{spec_text}</strong>.
                 </div>
-            """, unsafe_allow_html=True)
-
-            # Feature 3: Actionable First-Aid Treatment Recommendation Block View
-            st.markdown(f"""
-                <div class="clinical-info-bin" style="border-left: 4px solid #10b981; background-color: #064e3b; color: #a7f3d0;">
+                <div class="clinical-info-bin" style="border-left: 4px solid #10b981; background-color: #f0fdf4;">
                     🛡️ <strong>First-Line General Guidance Measures:</strong> {treatment_advice}
                 </div>
             """, unsafe_allow_html=True)
 
-            # Demographics Safety Rules Callouts
+            # NEW FEATURE: Automated Hospital Department Directory Finder
+            st.markdown("<br><h5 style='color: #0369a1;'>🏢 Facility Department Referral Finder</h5>", unsafe_allow_html=True)
+            if spec_text in HOSPITAL_DIRECTORY:
+                dir_info = HOSPITAL_DIRECTORY[spec_text]
+                st.markdown(f"""
+                    <div class="clinical-info-bin" style="border: 1px solid #bae6fd; background-color: #f0f9ff; margin-top: 5px;">
+                        🏢 <strong>Target Hospital Unit:</strong> {dir_info['dept']}<br>
+                        📍 <strong>Internal Facility Location:</strong> {dir_info['floor']}<br>
+                        📞 <strong>Direct Contact Hotline Routing:</strong> <span style="color: #0284c7; font-weight: bold;">{dir_info['hotline']}</span>
+                    </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.info("Hospital routing path details are pending centralized updates.")
+
             if patient_age < 12 and "Reaction" in prediction:
                 st.error("🚨 **Pediatric Warning Indicator:** Selected profile markers display hyper-sensitivity indicators to conventional chemical therapies. Avoid self-treatment.")
             elif patient_age > 65:
                 st.warning("⚠️ **Geriatric Metric Warning:** Clearance rates for primary drug pathways are slowed in patients over 65. Clinical review is advised.")
 
-            # Variant Distribution Graph
-            st.markdown("<br><h5 style='color: #38bdf8;'>Statistical Secondary Variant Analysis</h5>", unsafe_allow_html=True)
+            st.markdown("<br><h5 style='color: #0369a1;'>Statistical Secondary Variant Analysis</h5>", unsafe_allow_html=True)
             top_indices = np.argsort(probabilities)[::-1][:3]
             chart_data = pd.DataFrame({
                 "Condition Vector Class": [classes[i] for i in top_indices],
@@ -311,7 +325,6 @@ if model_ready:
             })
             st.bar_chart(chart_data, x="Condition Vector Class", y="Confidence Match Score (%)", color="#0ea5e9")
 
-            # Secondary Variant Data Table Frame
             secondary_indices = np.argsort(probabilities)[::-1][1:6]
             matrix_df = pd.DataFrame({
                 "Alternative Target Conditions": [classes[i] for i in secondary_indices],
@@ -319,8 +332,7 @@ if model_ready:
             })
             st.dataframe(matrix_df, use_container_width=True, hide_index=True)
 
-            # Dynamic Markdown Report Builder File Stream
-            report_content = f"""# CLINICAL DATA SCIENCE INFerence LOG REPORT
+            report_content = f"""# CLINICAL DATA SCIENCE INFERENCE LOG REPORT
 - **Patient Profile Demographics:** {patient_age} Years Old ({patient_gender})
 - **Reported Timeline Status:** {symptom_duration}
 - **Assigned Triage Risk Tier Level:** {risk_tier}
