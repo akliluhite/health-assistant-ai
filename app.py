@@ -5,250 +5,248 @@ import time
 import base64
 from sklearn.ensemble import RandomForestClassifier
 
-# =========================================================
+# =====================================================
 # PAGE CONFIG
-# =========================================================
+# =====================================================
 st.set_page_config(
-    page_title="AI Clinical Diagnostic Portal",
+    page_title="AI Clinical Diagnosis Portal",
     page_icon="🏥",
     layout="centered",
     initial_sidebar_state="expanded"
 )
 
-# =========================================================
+# =====================================================
 # LOAD BACKGROUND IMAGE
 # Put caregiver_bg.jpg in same folder as app.py
-# =========================================================
+# =====================================================
 def get_base64(file_path):
     with open(file_path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
+        data = f.read()
+    return base64.b64encode(data).decode()
 
 img = get_base64("caregiver_bg.jpg")
 
-# =========================================================
+# =====================================================
 # CUSTOM CSS
-# =========================================================
-st.markdown(f"""
-<style>
+# =====================================================
+st.markdown(
+    f"""
+    <style>
 
-/* =========================================================
-BACKGROUND IMAGE
-========================================================= */
-.stApp {{
-    background:
-        linear-gradient(
-            rgba(255,255,255,0.30),
-            rgba(255,255,255,0.30)
-        ),
-        url("data:image/jpg;base64,{img}");
+    /* =====================================================
+       MAIN BACKGROUND
+    ===================================================== */
+    .stApp {{
+        background:
+            linear-gradient(
+                rgba(255,255,255,0.30),
+                rgba(255,255,255,0.30)
+            ),
+            url("data:image/jpg;base64,{img}");
 
-    background-size: cover !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
-}}
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }}
 
-/* REMOVE STREAMLIT WHITE LAYER */
-[data-testid="stAppViewContainer"] {{
-    background: transparent !important;
-}}
+    [data-testid="stAppViewContainer"] {{
+        background: transparent !important;
+    }}
 
-.main .block-container {{
-    background: transparent !important;
-    padding-top: 2rem;
-}}
+    .main .block-container {{
+        background: transparent !important;
+        padding-top: 2rem;
+    }}
 
-/* =========================================================
-TYPOGRAPHY
-========================================================= */
-h1 {{
-    color: #172033 !important;
-    font-size: 3rem !important;
-    font-weight: 800 !important;
-}}
+    /* =====================================================
+       TYPOGRAPHY
+    ===================================================== */
+    h1 {{
+        color: #172033 !important;
+        font-size: 3rem !important;
+        font-weight: 800 !important;
+    }}
 
-h2, h3, h4, h5 {{
-    color: #172033 !important;
-    font-weight: 700 !important;
-}}
+    h2, h3, h4, h5 {{
+        color: #172033 !important;
+        font-weight: 700 !important;
+    }}
 
-.sub-heading {{
-    color: #334155 !important;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    font-weight: 500;
-}}
+    .sub-heading {{
+        color: #334155 !important;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+    }}
 
-/* =========================================================
-HEADER CARD
-========================================================= */
-.header-card {{
-    background: rgba(255,255,255,0.80);
-    backdrop-filter: blur(6px);
+    /* =====================================================
+       HEADER CARD
+    ===================================================== */
+    .header-card {{
+        background: rgba(255,255,255,0.82);
+        backdrop-filter: blur(5px);
 
-    padding: 30px;
-    border-radius: 20px;
+        padding: 30px;
 
-    border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 20px;
 
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255,255,255,0.4);
 
-    margin-bottom: 30px;
-}}
+        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
 
-/* =========================================================
-MAIN CARD
-========================================================= */
-.main-card {{
-    background: rgba(255,255,255,0.78);
+        margin-bottom: 30px;
+    }}
 
-    backdrop-filter: blur(5px);
+    /* =====================================================
+       MAIN CARD
+    ===================================================== */
+    .main-card {{
+        background: rgba(255,255,255,0.80);
 
-    border-radius: 20px;
+        backdrop-filter: blur(5px);
 
-    padding: 25px;
+        border-radius: 18px;
 
-    border: 1px solid rgba(255,255,255,0.35);
+        padding: 25px;
 
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border: 1px solid rgba(255,255,255,0.35);
 
-    margin-bottom: 25px;
-}}
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 
-/* =========================================================
-SIDEBAR
-========================================================= */
-section[data-testid="stSidebar"] {{
-    background: rgba(255,255,255,0.82) !important;
+        margin-bottom: 25px;
+    }}
 
-    backdrop-filter: blur(8px);
-}}
+    /* =====================================================
+       SIDEBAR
+    ===================================================== */
+    section[data-testid="stSidebar"] {{
+        background: rgba(255,255,255,0.82) !important;
 
-/* =========================================================
-BUTTONS
-========================================================= */
-.stButton > button {{
-    width: 100%;
-    border-radius: 12px !important;
-    border: none !important;
-    padding: 12px 20px !important;
-    font-weight: 700 !important;
-    transition: 0.3s;
-}}
+        backdrop-filter: blur(8px);
+    }}
 
-.stButton > button[data-testid="baseButton-primary"] {{
-    background: #0f766e !important;
-    color: white !important;
-}}
+    /* =====================================================
+       BUTTONS
+    ===================================================== */
+    .stButton > button {{
+        width: 100%;
+        border-radius: 12px !important;
+        border: none !important;
+        padding: 12px 18px !important;
+        font-weight: 700 !important;
+        transition: 0.3s;
+    }}
 
-.stButton > button[data-testid="baseButton-primary"]:hover {{
-    background: #115e59 !important;
-    transform: translateY(-2px);
-}}
+    .stButton > button[data-testid="baseButton-primary"] {{
+        background: #0f766e !important;
+        color: white !important;
+    }}
 
-.stButton > button:not([data-testid="baseButton-primary"]) {{
-    background: #e2e8f0 !important;
-    color: #172033 !important;
-}}
+    .stButton > button[data-testid="baseButton-primary"]:hover {{
+        background: #115e59 !important;
+        transform: translateY(-2px);
+    }}
 
-/* =========================================================
-METRIC CARDS
-========================================================= */
-.clinical-metric {{
-    background: rgba(255,255,255,0.80);
+    .stButton > button:not([data-testid="baseButton-primary"]) {{
+        background: #e2e8f0 !important;
+        color: #172033 !important;
+    }}
 
-    backdrop-filter: blur(6px);
+    /* =====================================================
+       METRIC CARDS
+    ===================================================== */
+    .clinical-metric {{
+        background: rgba(255,255,255,0.82);
 
-    border-radius: 16px;
+        backdrop-filter: blur(5px);
 
-    padding: 20px;
+        border-radius: 16px;
 
-    border: 1px solid rgba(255,255,255,0.4);
+        padding: 20px;
 
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border: 1px solid rgba(255,255,255,0.4);
 
-    margin-top: 10px;
-}}
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 
-.clinical-label {{
-    font-size: 0.75rem;
-    color: #64748b;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}}
+        margin-top: 10px;
+    }}
 
-.clinical-value {{
-    font-size: 1.2rem;
-    font-weight: 800;
-    margin-top: 5px;
-    color: #172033;
-}}
+    .clinical-label {{
+        font-size: 0.75rem;
+        color: #64748b;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }}
 
-/* =========================================================
-INFO BOXES
-========================================================= */
-.clinical-info-bin {{
-    background: rgba(255,255,255,0.80);
+    .clinical-value {{
+        font-size: 1.2rem;
+        font-weight: 800;
+        margin-top: 5px;
+        color: #172033;
+    }}
 
-    backdrop-filter: blur(5px);
+    /* =====================================================
+       INFO BOXES
+    ===================================================== */
+    .clinical-info-bin {{
+        background: rgba(255,255,255,0.82);
 
-    border-radius: 16px;
+        backdrop-filter: blur(5px);
 
-    padding: 18px;
+        border-radius: 16px;
 
-    border: 1px solid rgba(255,255,255,0.35);
+        padding: 18px;
 
-    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+        border: 1px solid rgba(255,255,255,0.35);
 
-    margin-top: 15px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.05);
 
-    color: #334155;
+        margin-top: 15px;
 
-    line-height: 1.6;
-}}
+        color: #334155;
 
-/* =========================================================
-DATAFRAME
-========================================================= */
-[data-testid="stDataFrame"] {{
-    background: rgba(255,255,255,0.82);
-    border-radius: 15px;
-    overflow: hidden;
-}}
+        line-height: 1.6;
+    }}
 
-/* =========================================================
-MULTISELECT
-========================================================= */
-.stMultiSelect,
-.stSelectbox {{
-    background: rgba(255,255,255,0.7);
-    border-radius: 10px;
-}}
+    /* =====================================================
+       DATAFRAME
+    ===================================================== */
+    [data-testid="stDataFrame"] {{
+        background: rgba(255,255,255,0.82);
+        border-radius: 15px;
+        overflow: hidden;
+    }}
 
-</style>
-""", unsafe_allow_html=True)
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-# =========================================================
+# =====================================================
 # HEADER
-# =========================================================
-st.markdown("""
-<div class="header-card">
+# =====================================================
+st.markdown(
+    """
+    <div class="header-card">
 
-    <h2 style="color:#0f766e; margin-bottom:8px;">
-        🏥 Clinical Informatics Intelligence Center
-    </h2>
+        <h2 style="color:#0f766e; margin-bottom:8px;">
+            🏥 Clinical Informatics Intelligence Center
+        </h2>
 
-    <p style="color:#475569; margin:0; font-size:1rem;">
-        Machine Learning Statistical Inference Gateway
-    </p>
+        <p style="color:#475569; margin:0; font-size:1rem;">
+            Machine Learning Statistical Inference Gateway
+        </p>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
-# =========================================================
+# =====================================================
 # LOAD MODEL
-# =========================================================
+# =====================================================
 @st.cache_resource
 def load_and_train_model():
 
@@ -273,9 +271,9 @@ except Exception:
     st.error("Training.csv file not found.")
     model_ready = False
 
-# =========================================================
-# DISEASE INFO
-# =========================================================
+# =====================================================
+# DISEASE DATABASE
+# =====================================================
 DISEASE_INFO = {
 
     "Fungal infection": {
@@ -309,15 +307,15 @@ DISEASE_INFO = {
     }
 }
 
-# =========================================================
+# =====================================================
 # SESSION STATE
-# =========================================================
+# =====================================================
 if "history_log" not in st.session_state:
     st.session_state.history_log = []
 
-# =========================================================
+# =====================================================
 # SIDEBAR
-# =========================================================
+# =====================================================
 st.sidebar.header("Patient Entry Profiles")
 
 patient_age = st.sidebar.slider(
@@ -343,20 +341,23 @@ symptom_duration = st.sidebar.selectbox(
     ]
 )
 
-# =========================================================
-# MAIN TITLE
-# =========================================================
+# =====================================================
+# TITLE
+# =====================================================
 st.title("AI Clinical Diagnosis Portal")
 
-st.markdown("""
-<div class="sub-heading">
-Isolate specific patient symptom indicators to compute machine learning prediction pathways.
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    """
+    <div class="sub-heading">
+        Isolate specific patient symptom indicators to compute machine learning prediction pathways.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
-# =========================================================
+# =====================================================
 # MAIN APP
-# =========================================================
+# =====================================================
 if model_ready:
 
     clean_features = [
@@ -391,9 +392,9 @@ if model_ready:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # =========================================================
+    # =====================================================
     # PREDICTION
-    # =========================================================
+    # =====================================================
     if submit_btn:
 
         if not selected_clean:
@@ -435,9 +436,9 @@ if model_ready:
 
             latency = (time.perf_counter() - start_time) * 1000
 
-            # =========================================================
-            # RISK
-            # =========================================================
+            # =====================================================
+            # RISK LEVEL
+            # =====================================================
             symptom_count = len(selected_clean)
 
             if symptom_count <= 2:
@@ -455,18 +456,9 @@ if model_ready:
                 risk = "High Risk"
                 risk_color = "#dc2626"
 
-            # =========================================================
-            # SAVE HISTORY
-            # =========================================================
-            st.session_state.history_log.append({
-                "Condition": prediction,
-                "Confidence": f"{confidence:.1f}%",
-                "Risk": risk
-            })
-
-            # =========================================================
+            # =====================================================
             # METRICS
-            # =========================================================
+            # =====================================================
             m1, m2, m3 = st.columns(3)
 
             with m1:
@@ -517,24 +509,9 @@ if model_ready:
                 </div>
                 """, unsafe_allow_html=True)
 
-            st.markdown(
-                f"""
-                <p style="
-                    text-align:right;
-                    color:#334155;
-                    font-size:0.85rem;
-                    margin-top:10px;
-                    font-weight:600;
-                ">
-                    Inference Latency: {latency:.3f} ms
-                </p>
-                """,
-                unsafe_allow_html=True
-            )
-
-            # =========================================================
-            # DISEASE INFO
-            # =========================================================
+            # =====================================================
+            # DISEASE DETAILS
+            # =====================================================
             desc = "No information available."
             specialist = "General Physician"
             treatment = "Consult a doctor."
@@ -575,9 +552,9 @@ if model_ready:
             </div>
             """, unsafe_allow_html=True)
 
-            # =========================================================
+            # =====================================================
             # CHART
-            # =========================================================
+            # =====================================================
             st.markdown("### Prediction Statistics")
 
             top_indices = np.argsort(probabilities)[::-1][:3]
@@ -596,87 +573,13 @@ if model_ready:
                 y="Confidence (%)"
             )
 
-            # =========================================================
-            # OTHER PREDICTIONS
-            # =========================================================
-            alt_indices = np.argsort(probabilities)[::-1][1:6]
-
-            matrix_df = pd.DataFrame({
-                "Alternative Predictions": [
-                    classes[i]
-                    for i in alt_indices
-                ],
-                "Probability": [
-                    f"{probabilities[i] * 100:.2f}%"
-                    for i in alt_indices
-                ]
-            })
-
-            st.dataframe(
-                matrix_df,
-                use_container_width=True,
-                hide_index=True
-            )
-
-            # =========================================================
-            # REPORT DOWNLOAD
-            # =========================================================
-            report_content = f"""
-AI CLINICAL REPORT
-
-Patient Age: {patient_age}
-Gender: {patient_gender}
-
-Symptoms:
-{", ".join(selected_clean)}
-
-Prediction:
-{prediction}
-
-Confidence:
-{confidence:.2f}%
-
-Risk:
-{risk}
-
-Specialist:
-{specialist}
-
-Treatment:
-{treatment}
-"""
-
-            st.download_button(
-                label="📥 Export Report",
-                data=report_content,
-                file_name="Clinical_Report.txt",
-                mime="text/plain",
-                use_container_width=True
-            )
-
-# =========================================================
-# HISTORY
-# =========================================================
-if st.session_state.history_log:
-
-    st.markdown("## 📜 Session History")
-
-    history_df = pd.DataFrame(
-        st.session_state.history_log[::-1]
-    )
-
-    st.dataframe(
-        history_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-# =========================================================
+# =====================================================
 # FOOTER
-# =========================================================
+# =====================================================
 st.markdown("<br><br>", unsafe_allow_html=True)
 
-st.caption("""
-⚠️ Educational Project Disclaimer:
-This system is for educational purposes only and does not replace professional medical diagnosis.
-""")
+st.caption(
+    "⚠️ Educational Project Disclaimer: "
+    "This system is for educational purposes only "
+    "and does not replace professional medical diagnosis."
+)
