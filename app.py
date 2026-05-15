@@ -104,11 +104,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# FIXED IMAGE LINK: Highly reliable, cloud-optimized public medical banner image link
+# FIXED CORE VIEW CONTAINER: Standard horizontal width allocation rules applied directly
 st.image(
     "https://unsplash.com",
-    use_container_width=True,
-    caption="Clinical Informatics Intelligence Workspace"
+    width=700,
+    caption="Clinical Informatics Intelligence Workspace Monitoring Array"
 )
 
 # Cache data loading and training structure
@@ -262,7 +262,7 @@ if model_ready:
                 risk_tier = "Urgent / Elevated"
                 risk_color = "#ef4444"
 
-            # Log data history tuple record into memory
+            # Log data history record into session state memory
             st.session_state.history_log.append({
                 "Condition": prediction,
                 "Certainty": f"{confidence:.1f}%",
