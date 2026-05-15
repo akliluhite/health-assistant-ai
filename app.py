@@ -60,7 +60,7 @@ st.markdown(f"""
         background: rgba(255, 255, 255, 0.95) !important;
         padding: 30px !important;
         border-radius: 12px !important;
-        border: 1px solid #e2e8f0 !important;
+        border: 1px solid #cbd5e1 !important;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
         backdrop-filter: blur(8px);
     }}
@@ -82,7 +82,7 @@ st.markdown(f"""
     /* Clean White Metric Component Blocks */
     .clinical-metric {{
         background-color: rgba(255, 255, 255, 0.95);
-        border: 1px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         border-radius: 10px;
         padding: 18px;
         margin-top: 15px;
@@ -105,7 +105,7 @@ st.markdown(f"""
     /* General Flat Content Information Bins */
     .clinical-info-bin {{
         background-color: rgba(248, 250, 252, 0.95);
-        border: 1px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         padding: 16px;
         border-radius: 8px;
         margin-top: 12px;
@@ -116,7 +116,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# FIXED COMPONENT: CSS-based Corporate Medical Header Card Box with clean text configuration tracking
+# FIXED HEADER COMPONENT: Fully formatted clean text banner layout block
 st.markdown("""
     <div style="background-color: rgba(255, 255, 255, 0.9); padding: 30px; border-radius: 12px; text-align: left; margin-bottom: 25px; border: 1px solid #cbd5e1; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);">
         <h2 style="color: #0f766e; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 1.5rem; font-weight: 700;">🏥 Clinical Informatics Intelligence Center</h2>
@@ -161,7 +161,7 @@ DISEASE_INFO = {
     "Paralysis (brain hemorrhage)": {"desc": "Loss of muscle function in part of your body, caused by bleeding inside the brain tissue.", "specialist": "Neurologist / Neurosurgeon", "treatment": "Immediate emergency room evaluations required, establish supportive physical therapies."},
     "Jaundice": {"desc": "A yellowing of the skin and eyes caused by high levels of bilirubin.", "specialist": "Hepatologist / Gastroenterologist", "treatment": "Prioritize rest, eliminate completely all alcoholic pathways, monitor liver functions."},
     "Malaria": {"desc": "A disease caused by a plasmodium parasite, transmitted by the bite of infected mosquitoes.", "specialist": "Infectious Disease Specialist", "treatment": "Seek immediate antimalarial pharmacotherapy, monitor hydration levels carefully."},
-    "Chicken pox": {"desc": "A highly contagious viral infection causing an itchy, blister-like rash on the skin.", "specialist": "General Physician / Pediatrician", "treatment": "Rest, maintain clean skin, use anti-itch lotions, monitor internal body temperature flags."},
+    "Chicken pox": {"desc": "A highly contagious viral infection causing an itchy, blister-like rash on the skin.", "specialist": "General Physician / Pediatrician", "treatment": "Rest, maintain clean skin, use anti-inch lotions, monitor internal body temperature flags."},
     "Dengue": {"desc": "A mosquito-borne viral disease occurring in tropical and subtropical areas.", "specialist": "Infectious Disease Specialist", "treatment": "Maximize clean hydration intake profiles, take paracetamol for tracking pain, avoid ibuprofen options."},
     "Typhoid": {"desc": "A bacterial infection spread through contaminated food and water.", "specialist": "Infectious Disease Specialist", "treatment": "Complete complete antibiotic prescription metrics, consume fully pasteurized foods."},
     "Common Cold": {"desc": "A common viral infection of the nose and throat.", "specialist": "General Physician", "treatment": "Maintain vocal rest, ingest warm fluid configurations, track respiratory markers."},
@@ -231,15 +231,15 @@ if model_ready:
     
     btn_col1, btn_col2 = st.columns(2)
     with btn_col1:
-        submit_btn = st.button("Run Diagnostic Analysis", type="primary", use_container_width=True)
+        st.button("Run Diagnostic Analysis", type="primary", use_container_width=True)
     with btn_col2:
         if st.button("Clear Input Node", use_container_width=True):
             st.session_state.symptom_key += 1
             st.rerun()
 
-    if submit_btn:
+    if st.button:
         if not selected_clean:
-            st.warning("Please isolate manifestation variables inside the selector tool before continuing.")
+            pass
         else:
             start_latency_time = time.perf_counter()
             
