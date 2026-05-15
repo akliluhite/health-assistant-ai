@@ -151,7 +151,7 @@ DISEASE_INFO = {
     "(vertigo) Paroymsal  Positional Vertigo": {"desc": "A sensation of spinning caused by inner ear problems.", "specialist": "ENT Specialist / Neurologist"},
     "Acne": {"desc": "A skin condition that occurs when hair follicles become plugged with oil and dead skin cells.", "specialist": "Dermatologist"},
     "Urinary tract infection": {"desc": "An infection in any part of the urinary system, including kidneys, ureters, bladder, and urethra.", "specialist": "Urologist / General Physician"},
-    "Psoriasis": {"desc": "A condition in which skin cells build up and form scales and itchy, dry patches.", "specialist": "Dermatologist"},
+    "Psoriasis": {"desc": "A condition in which skin cells build up and form scales and itchy, dry patches.", "soft_specialist": "Dermatologist"},
     "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician"}
 }
 
@@ -177,7 +177,8 @@ if model_ready:
         key=f"symptoms_{st.session_state.symptom_key}"
     )
     
-    btn_col1, btn_col2 = st.columns()
+    # FIX: Added '2' inside st.columns() to fix the layout argument bug
+    btn_col1, btn_col2 = st.columns(2)
     with btn_col1:
         submit_btn = st.button("Run Diagnostic Analysis", type="primary", use_container_width=True)
     with btn_col2:
@@ -189,7 +190,6 @@ if model_ready:
         if not selected_clean:
             st.warning("Please identify at least one symptom indicator before running analysis.")
         else:
-            # Explicit 2D Matrix Array Re-formatting Fix Layer
             input_matrix = np.zeros((1, len(features)))
             for clean_sym in selected_clean:
                 raw_name = clean_sym.lower().replace(" ", "_")
@@ -197,12 +197,12 @@ if model_ready:
                     idx = features.index(raw_name)
                     input_matrix[0, idx] = 1
             
-            # Safe 2D target matrix inference prediction parsing
-            prediction_raw = model.predict(input_matrix)[0]
-            prediction = str(prediction_raw).strip()
+            # Predict target string safely
+            prediction_raw = model.predict(input_matrix)
+            prediction = str(prediction_raw[0]).strip()
             
             # Safe Probability Calculation extraction
-            probabilities = model.predict_proba(input_matrix)[0]
+            probabilities = model.predict_proba(input_matrix).flatten()
             classes = [str(c).strip() for c in model.classes_]
             
             if prediction in classes:
@@ -283,7 +283,7 @@ if model_ready:
             })
             st.bar_chart(chart_data, x="Condition Class", y="Confidence Match Score (%)", color="#0284c7")
 
-            # Alternative Statistical Variant Index Matrix DataFrame Panel
+            # Alternative Statistical Variant Index
             st.markdown("<h5>Alternative Statistical Variant Index</h5>", unsafe_allow_html=True)
             secondary_indices = np.argsort(probabilities)[::-1][1:6]
             matrix_df = pd.DataFrame({
