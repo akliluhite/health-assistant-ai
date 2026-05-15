@@ -16,6 +16,7 @@ st.set_page_config(
 BACKGROUND_IMAGE_URL = "https://githubusercontent.com"
 
 # Premium Material UI Clinical CSS System with full-screen structural image layering
+# FIX: Doubled up the CSS curly braces to prevent Python f-string conflicts
 st.markdown(f"""
     <style>
     /* Full-Screen Structural Background Image configurations */
@@ -94,13 +95,13 @@ st.markdown(f"""
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 0.5px;
-    }
+    }}
     .clinical-value {{
         font-size: 1.2rem;
         color: #1e293b;
         font-weight: 600;
         margin-top: 4px;
-    }
+    }}
     
     /* General Flat Content Information Bins */
     .clinical-info-bin {{
@@ -213,7 +214,7 @@ st.sidebar.subheader("Case Duration Matrix")
 symptom_duration = st.sidebar.selectbox("Symptoms Persisting For:", ["Less than 24 Hours", "1 to 3 Days", "More than a Week"])
 
 # Workspace Title Headers
-st.title("AI Clinical Diagnosis Node")
+st.title("AI Clinical Diagnosis Portal")
 st.markdown("<div class='sub-heading'>Isolate specific patient symptom indicators to compute machine learning probability classification paths.</div>", unsafe_allow_html=True)
 
 if model_ready:
@@ -307,7 +308,7 @@ if model_ready:
                     </div>
                 """, unsafe_allow_html=True)
             
-            st.markdown(f"<p style='color: #475569; font-size: 0.8rem; margin-top: 10px; text-align: right; font-weight: 600;'>实时处理流水线耗时 (Inference Latency): {processing_latency:.3f} ms</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color: #475569; font-size: 0.8rem; margin-top: 10px; text-align: right; font-weight: 600;'>Inference Latency: {processing_latency:.3f} ms</p>", unsafe_allow_html=True)
             
             desc_text = "Conditional indicator profiles pending engine knowledge base extension."
             spec_text = "General Physician"
