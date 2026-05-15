@@ -74,7 +74,7 @@ st.markdown("""
         letter-spacing: 0.5px;
     }
     .metric-value {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: #0f172a;
         font-weight: 700;
         margin-top: 4px;
@@ -189,18 +189,20 @@ if model_ready:
         if not selected_clean:
             st.warning("Please identify at least one symptom indicator before running analysis.")
         else:
-            input_data = np.zeros(len(features))
+            # Explicit 2D Matrix Array Re-formatting Fix Layer
+            input_matrix = np.zeros((1, len(features)))
             for clean_sym in selected_clean:
                 raw_name = clean_sym.lower().replace(" ", "_")
                 if raw_name in features:
                     idx = features.index(raw_name)
-                    input_data[idx] = 1
+                    input_matrix[0, idx] = 1
             
-            # Predict target string safely
-            prediction = str(model.predict([input_data])[0]).strip()
+            # Safe 2D target matrix inference prediction parsing
+            prediction_raw = model.predict(input_matrix)[0]
+            prediction = str(prediction_raw).strip()
             
-            # Fixed Probability Evaluation Logic Block
-            probabilities = model.predict_proba([input_data]).flatten()
+            # Safe Probability Calculation extraction
+            probabilities = model.predict_proba(input_matrix)[0]
             classes = [str(c).strip() for c in model.classes_]
             
             if prediction in classes:
@@ -268,7 +270,7 @@ if model_ready:
             elif patient_age > 65:
                 st.warning("⚠️ **Geriatric Metric Warning:** Clearance rates for primary drug pathways are slowed in patients over 65. Clinical review is advised.")
 
-            # Fixed Chart and Alternative Index Array Sorting Logic Block
+            # Top Probable Variant Distributions Chart
             st.markdown("<br><h5>Top Probable Variant Distributions</h5>", unsafe_allow_html=True)
             top_indices = np.argsort(probabilities)[::-1][:3]
             
@@ -281,7 +283,7 @@ if model_ready:
             })
             st.bar_chart(chart_data, x="Condition Class", y="Confidence Match Score (%)", color="#0284c7")
 
-            # Alternative Statistical Variant Index
+            # Alternative Statistical Variant Index Matrix DataFrame Panel
             st.markdown("<h5>Alternative Statistical Variant Index</h5>", unsafe_allow_html=True)
             secondary_indices = np.argsort(probabilities)[::-1][1:6]
             matrix_df = pd.DataFrame({
