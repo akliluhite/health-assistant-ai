@@ -4,45 +4,45 @@ import numpy as np
 import time
 from sklearn.ensemble import RandomForestClassifier
 
-# Set layout configurations with a dedicated sidebar collapse feature
+# Set clean medical page configuration
 st.set_page_config(
-    page_title="AI Clinical Diagnostic Node",
-    page_icon="🧬",
+    page_title="Advanced AI Medical Diagnostics Node",
+    page_icon="🏥",
     layout="centered",
     initial_sidebar_state="expanded"
 )
 
-# Custom Premium Skylight Theme Layer Injection
+# Custom Luxury Mint Teal Theme Layer Injection
 st.markdown("""
     <style>
-    /* Main Skylight View Frame Base */
+    /* Main App Luxury Mint Teal Gradient Background tint */
     .stApp {
-        background: linear-gradient(180deg, #e0f2fe 0%, #f8fafc 400px, #f8fafc 100%) !important;
-        color: #1e293b !important;
+        background: linear-gradient(135deg, #e6f4f1 0%, #f4fbf9 50%, #ffffff 100%) !important;
+        color: #111827 !important;
     }
     
     /* Clean Minimal Header Structure */
     h1 {
-        color: #0369a1 !important;
-        font-family: 'Segoe UI', sans-serif;
+        color: #0f4c43 !important;
+        font-family: 'Inter', system-ui, sans-serif;
         font-weight: 800 !important;
         letter-spacing: -0.5px;
     }
     
     .sub-heading {
-        color: #0284c7 !important;
+        color: #115e54 !important;
         font-size: 1.05rem;
         margin-bottom: 2.5rem;
         font-weight: 500;
     }
     
-    /* Sidebar styling overrides to fit skylight tone */
+    /* Sidebar styling overrides to fit mint teal tone */
     section[data-testid="stSidebar"] {
-        background-color: #f0f9ff !important;
-        border-right: 1px solid #bae6fd;
+        background-color: #f2faf8 !important;
+        border-right: 1px solid #ccece6;
     }
     section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] p, section[data-testid="stSidebar"] label {
-        color: #0369a1 !important;
+        color: #0f4c43 !important;
     }
 
     /* Core Input Panel Content Card Element Wrapper */
@@ -50,30 +50,30 @@ st.markdown("""
         background: #ffffff !important;
         padding: 35px !important;
         border-radius: 16px !important;
-        border: 1px solid #bae6fd !important;
-        box-shadow: 0 10px 25px -5px rgba(3, 105, 161, 0.05) !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: 0 10px 25px -5px rgba(15, 76, 67, 0.04) !important;
     }
 
     /* Primary Interactive Trigger Button Formatting */
     .stButton>button[data-testid="baseButton-primary"] {
-        background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
+        background: linear-gradient(135deg, #14b8a6 0%, #0f4c43 100%) !important;
         color: #ffffff !important;
         border-radius: 8px !important;
         border: none !important;
         padding: 14px 28px !important;
         font-weight: 700 !important;
-        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+        box-shadow: 0 4px 12px rgba(20, 184, 166, 0.2);
     }
     
     /* Premium Styled Output Display Metric Blocks */
     .clinical-metric {
         background-color: #ffffff;
-        border: 1px solid #cbd5e1;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
         padding: 22px;
         margin-top: 15px;
-        border-top: 4px solid #0284c7;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border-top: 4px solid #14b8a6;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
     }
     .clinical-label {
         font-size: 0.8rem;
@@ -91,8 +91,8 @@ st.markdown("""
     
     /* General Text Information Callout Bins */
     .clinical-info-bin {
-        background-color: #f8fafc;
-        border: 1px solid #cbd5e1;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
         padding: 18px;
         border-radius: 10px;
         margin-top: 12px;
@@ -152,7 +152,6 @@ DISEASE_INFO = {
     "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician", "treatment": "Apply topical prescription medication arrays, sanitize clothing items separately."}
 }
 
-# Hospital Referral Directory Mapping Core Data
 HOSPITAL_DIRECTORY = {
     "Dermatologist": {"dept": "Dermatology & Skin Sciences Clinic", "hotline": "+1 (555) 019-2831", "floor": "Building B, 3rd Floor"},
     "Allergist / Immunologist": {"dept": "Allergy Research & Immunology Institute", "hotline": "+1 (555) 014-9922", "floor": "Main West Wing, 2nd Floor"},
@@ -178,6 +177,10 @@ HOSPITAL_DIRECTORY = {
     "Urologist / General Physician": {"dept": "Renal Health & Comprehensive Urology Clinic", "hotline": "+1 (555) 012-4411", "floor": "Medical Tower B, Ground Floor Annex"},
     "Dermatologist / General Physician": {"dept": "Acute Skin Lesion & Dermatology Unit", "hotline": "+1 (555) 019-3322", "floor": "Building B, 3rd Floor East"}
 }
+
+# Feature Upgrade: Session History Logging Array Initialization
+if "history_log" not in st.session_state:
+    st.session_state.history_log = []
 
 # Patient Registry Demographic Sidebar Panel Configuration
 st.sidebar.header("📋 Patient Profile Registry")
@@ -226,7 +229,7 @@ if model_ready:
                     input_matrix[0, idx] = 1
             
             prediction_raw = model.predict(input_matrix)
-            prediction = str(prediction_raw[0]).strip()
+            prediction = str(prediction_raw).strip()
             
             probabilities = model.predict_proba(input_matrix).flatten()
             classes = [str(c).strip() for c in model.classes_]
@@ -243,7 +246,7 @@ if model_ready:
             symptom_count = len(selected_clean)
             if symptom_count <= 2 and "Week" not in symptom_duration:
                 risk_tier = "Mild"
-                risk_color = "#10b981"
+                risk_color = "#14b8a6"
             elif symptom_count <= 5 and "Week" not in symptom_duration:
                 risk_tier = "Moderate"
                 risk_color = "#f59e0b"
@@ -251,26 +254,34 @@ if model_ready:
                 risk_tier = "Urgent / Elevated"
                 risk_color = "#ef4444"
 
+            # Log data history tuple record into memory
+            st.session_state.history_log.append({
+                "Condition": prediction,
+                "Certainty": f"{confidence:.1f}%",
+                "Risk Level": risk_tier,
+                "Symptoms Count": symptom_count
+            })
+
             col_m1, col_m2, col_m3 = st.columns(3)
             with col_m1:
                 st.markdown(f"""
                     <div class="clinical-metric">
                         <div class="clinical-label">Inferred Classification</div>
-                        <div class="clinical-value" style="color: #0284c7;">{prediction}</div>
+                        <div class="clinical-value" style="color: #0f4c43;">{prediction}</div>
                     </div>
                 """, unsafe_allow_html=True)
             with col_m2:
                 st.markdown(f"""
-                    <div class="clinical-metric" style="border-top-color: #10b981;">
+                    <div class="clinical-metric" style="border-top-color: #14b8a6;">
                         <div class="clinical-label">Model Certitude</div>
-                        <div class="clinical-value" style="color: #10b981;">{confidence:.1f}%</div>
+                        <div class="clinical-value" style="color: #14b8a6;">{confidence:.1f}%</div>
                     </div>
                 """, unsafe_allow_html=True)
             with col_m3:
                 st.markdown(f"""
                     <div class="clinical-metric" style="border-top-color: {risk_color};">
                         <div class="clinical-label">Triage Priority Status</div>
-                        <div class="metric-value" style="color: {risk_color}; font-size:1.25rem; font-weight:700; margin-top:6px;">{risk_tier}</div>
+                        <div class="clinical-value" style="color: {risk_color}; font-size:1.25rem;">{risk_tier}</div>
                     </div>
                 """, unsafe_allow_html=True)
             
@@ -293,20 +304,20 @@ if model_ready:
                 <div class="clinical-info-bin" style="border-left: 4px solid #f59e0b; background-color: #fffbeb;">
                     📍 <strong>Assigned Clinical Routing Vector:</strong> Referral recommended to a <strong>{spec_text}</strong>.
                 </div>
-                <div class="clinical-info-bin" style="border-left: 4px solid #10b981; background-color: #f0fdf4;">
+                <div class="clinical-info-bin" style="border-left: 4px solid #14b8a6; background-color: #f2faf8;">
                     🛡️ <strong>First-Line General Guidance Measures:</strong> {treatment_advice}
                 </div>
             """, unsafe_allow_html=True)
 
-            # NEW FEATURE: Automated Hospital Department Directory Finder
-            st.markdown("<br><h5 style='color: #0369a1;'>🏢 Facility Department Referral Finder</h5>", unsafe_allow_html=True)
+            # Facility Department Referral Finder Output
+            st.markdown("<br><h5 style='color: #0f4c43;'>🏢 Facility Department Referral Finder</h5>", unsafe_allow_html=True)
             if spec_text in HOSPITAL_DIRECTORY:
                 dir_info = HOSPITAL_DIRECTORY[spec_text]
                 st.markdown(f"""
-                    <div class="clinical-info-bin" style="border: 1px solid #bae6fd; background-color: #f0f9ff; margin-top: 5px;">
+                    <div class="clinical-info-bin" style="border: 1px solid #cbd5e1; background-color: #ffffff; margin-top: 5px;">
                         🏢 <strong>Target Hospital Unit:</strong> {dir_info['dept']}<br>
                         📍 <strong>Internal Facility Location:</strong> {dir_info['floor']}<br>
-                        📞 <strong>Direct Contact Hotline Routing:</strong> <span style="color: #0284c7; font-weight: bold;">{dir_info['hotline']}</span>
+                        📞 <strong>Direct Contact Hotline Routing:</strong> <span style="color: #14b8a6; font-weight: bold;">{dir_info['hotline']}</span>
                     </div>
                 """, unsafe_allow_html=True)
             else:
@@ -317,13 +328,13 @@ if model_ready:
             elif patient_age > 65:
                 st.warning("⚠️ **Geriatric Metric Warning:** Clearance rates for primary drug pathways are slowed in patients over 65. Clinical review is advised.")
 
-            st.markdown("<br><h5 style='color: #0369a1;'>Statistical Secondary Variant Analysis</h5>", unsafe_allow_html=True)
+            st.markdown("<br><h5 style='color: #0f4c43;'>Statistical Secondary Variant Analysis</h5>", unsafe_allow_html=True)
             top_indices = np.argsort(probabilities)[::-1][:3]
             chart_data = pd.DataFrame({
                 "Condition Vector Class": [classes[i] for i in top_indices],
                 "Confidence Match Score (%)": [probabilities[i] * 100 for i in top_indices]
             })
-            st.bar_chart(chart_data, x="Condition Vector Class", y="Confidence Match Score (%)", color="#0ea5e9")
+            st.bar_chart(chart_data, x="Condition Vector Class", y="Confidence Match Score (%)", color="#14b8a6")
 
             secondary_indices = np.argsort(probabilities)[::-1][1:6]
             matrix_df = pd.DataFrame({
@@ -354,6 +365,12 @@ if model_ready:
                 mime="text/markdown",
                 use_container_width=True
             )
+
+    # Feature Upgrade: Interactive Patient Session Lookup Log Table View Component
+    if st.session_state.history_log:
+        st.markdown("<br><h5 style='color: #0f4c43;'>📜 Session Diagnostic History Audit Log</h5>", unsafe_allow_html=True)
+        history_df = pd.DataFrame(st.session_state.history_log[::-1])
+        st.dataframe(history_df, use_container_width=True, hide_index=True)
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.caption("⚠️ **Educational Project Disclaimer:** This system functions strictly as a data-science exercise using training datasets. It does not replace professional medical evaluations, clinical triage plans, or medical advice.")
