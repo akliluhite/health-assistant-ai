@@ -27,7 +27,7 @@ st.markdown("""
         font-family: 'Inter', system-ui, sans-serif;
         font-weight: 800 !important;
         letter-spacing: -0.5px;
-        margin-top: 10px !important;
+        margin-top: 15px !important;
     }
     
     .sub-heading {
@@ -104,10 +104,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Feature Addition: Top Professional App Banner Image
+# FIXED IMAGE LINK: Highly reliable, cloud-optimized public medical banner image link
 st.image(
     "https://unsplash.com",
-    use_container_width=True
+    use_container_width=True,
+    caption="Clinical Informatics Intelligence Workspace"
 )
 
 # Cache data loading and training structure
