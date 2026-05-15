@@ -27,6 +27,7 @@ st.markdown("""
         font-family: 'Inter', system-ui, sans-serif;
         font-weight: 800 !important;
         letter-spacing: -0.5px;
+        margin-top: 10px !important;
     }
     
     .sub-heading {
@@ -103,6 +104,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Feature Addition: Top Professional App Banner Image
+st.image(
+    "https://unsplash.com",
+    use_container_width=True
+)
+
 # Cache data loading and training structure
 @st.cache_resource
 def load_and_train_model():
@@ -178,7 +185,7 @@ HOSPITAL_DIRECTORY = {
     "Dermatologist / General Physician": {"dept": "Acute Skin Lesion & Dermatology Unit", "hotline": "+1 (555) 019-3322", "floor": "Building B, 3rd Floor East"}
 }
 
-# Feature Upgrade: Session History Logging Array Initialization
+# Session History Logging Array Initialization
 if "history_log" not in st.session_state:
     st.session_state.history_log = []
 
@@ -272,14 +279,14 @@ if model_ready:
                 """, unsafe_allow_html=True)
             with col_m2:
                 st.markdown(f"""
-                    <div class="clinical-metric" style="border-top-color: #14b8a6;">
+                    <div class="metric-box" style="border-top-color: #14b8a6; background-color: #ffffff; border-radius: 12px; padding: 22px; margin-top: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
                         <div class="clinical-label">Model Certitude</div>
                         <div class="clinical-value" style="color: #14b8a6;">{confidence:.1f}%</div>
                     </div>
                 """, unsafe_allow_html=True)
             with col_m3:
                 st.markdown(f"""
-                    <div class="clinical-metric" style="border-top-color: {risk_color};">
+                    <div class="metric-box" style="border-top-color: {risk_color}; background-color: #ffffff; border-radius: 12px; padding: 22px; margin-top: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);">
                         <div class="clinical-label">Triage Priority Status</div>
                         <div class="clinical-value" style="color: {risk_color}; font-size:1.25rem;">{risk_tier}</div>
                     </div>
@@ -366,7 +373,7 @@ if model_ready:
                 use_container_width=True
             )
 
-    # Feature Upgrade: Interactive Patient Session Lookup Log Table View Component
+    # Patient Session Lookup Log Table View Component
     if st.session_state.history_log:
         st.markdown("<br><h5 style='color: #0f4c43;'>📜 Session Diagnostic History Audit Log</h5>", unsafe_allow_html=True)
         history_df = pd.DataFrame(st.session_state.history_log[::-1])
