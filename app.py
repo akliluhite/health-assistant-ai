@@ -3,47 +3,90 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
-# Set a professional dashboard page layout
+# Set layout configurations with a dedicated sidebar collapse feature
 st.set_page_config(
-    page_title="AI Medical Diagnostics Hub",
+    page_title="AI Healthcare System Portal",
     page_icon="🩺",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# Inject Custom CSS for professional typography, clean spacing, and modern UI cards
+# Custom High-Quality CSS Styling
 st.markdown("""
     <style>
-    /* Main app background tracking */
+    /* Premium Clinical Soft Light Grey Background tint */
     .stApp {
-        background-color: #f8fafc;
+        background-color: #f1f5f9 !important;
     }
-    /* Title styling */
+    
+    /* Clean Dark Slate Minimalist Headers */
     h1 {
-        color: #1e293b !important;
-        font-family: 'Inter', sans-serif;
-        font-weight: 800 !important;
+        color: #0f172a !important;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        font-weight: 700 !important;
         letter-spacing: -0.5px;
+        margin-bottom: 5px !important;
     }
-    /* Subtitle styling */
-    .subtitle-text {
-        color: #64748b;
-        font-size: 1.1rem;
+    
+    /* Subtitle text formatting styling */
+    .sub-heading {
+        color: #475569 !important;
+        font-size: 1.05rem;
         margin-bottom: 2rem;
     }
-    /* Custom Card for Results */
-    .result-card {
-        background-color: #ffffff;
-        padding: 24px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-        border-left: 5px solid #3b82f6;
-        margin-top: 1.5rem;
+
+    /* Modern minimalist dashboard container card styling overrides */
+    div[data-testid="stVerticalBlock"] > div:has(div.stMultiSelect) {
+        background: #ffffff !important;
+        padding: 30px !important;
+        border-radius: 16px !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05) !important;
     }
-    /* Feature styling tweaks */
-    .stMultiSelect div[data-baseweb="select"] {
+
+    /* Sleek Clean Button Override */
+    .stButton>button {
+        background-color: #0284c7 !important;
+        color: white !important;
         border-radius: 8px !important;
-        border-color: #cbd5e1 !important;
+        border: none !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        transition: background 0.2s ease;
+    }
+    .stButton>button:hover {
+        background-color: #0369a1 !important;
+    }
+
+    /* Custom Modern Clean Metrics Components */
+    .metric-box {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 15px;
+        border-left: 5px solid #0284c7;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .metric-label {
+        font-size: 0.85rem;
+        color: #64748b;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    .metric-value {
+        font-size: 1.4rem;
+        color: #0f172a;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+    .info-box {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+        color: #334155;
+        font-size: 0.95rem;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -64,7 +107,7 @@ try:
     model, features = load_and_train_model()
     model_ready = True
 except Exception as e:
-    st.error("❌ Could not load 'Training.csv' locally. Please verify your file setup.")
+    st.error("Could not load 'Training.csv' locally. Please verify your file setup.")
     model_ready = False
 
 # Mapping database tracking for predictions
@@ -112,21 +155,19 @@ DISEASE_INFO = {
     "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician"}
 }
 
-# Header Section
-st.title("🩺 AI Health Diagnostics Assistant")
-st.markdown("<p class='subtitle-text'>Select symptoms below to query the machine learning classification model workflow.</p>", unsafe_allow_html=True)
+# Clean layout application presentation
+st.title("Clinical Diagnostic Interface")
+st.markdown("<div class='sub-heading'>Enter clinical symptom indicators below to query the prediction evaluation workspace.</div>", unsafe_allow_html=True)
 
 if model_ready:
     clean_features = [f.replace("_", " ").title() for f in features]
     
-    # Wrap input form elements in a clean visual container
-    with st.container():
-        selected_clean = st.multiselect("Identify Patient Symptoms:", clean_features, placeholder="Type or click to choose symptoms...")
-        submit_btn = st.button("Analyze Symptoms", type="primary", use_container_width=True)
+    selected_clean = st.multiselect("Identify Observed Symptoms:", clean_features, placeholder="Type to filter symptoms...")
+    submit_btn = st.button("Run Diagnostic Analysis", use_container_width=True)
 
     if submit_btn:
         if not selected_clean:
-            st.warning("Please select at least one symptom.")
+            st.warning("Please identify at least one symptom indicator before running analysis.")
         else:
             input_data = np.zeros(len(features))
             for clean_sym in selected_clean:
@@ -135,28 +176,34 @@ if model_ready:
                     idx = features.index(raw_name)
                     input_data[idx] = 1
             
-            # Predict core array targets safely
-            prediction = model.predict([input_data])[0]
+            # Formulate raw tracking output arrays into clean localized parameters
+            prediction_array = model.predict([input_data])
+            prediction = str(prediction_array[0]).strip()
             
-            # Formulate layout using a custom styled box container
+            # Minimalist clean typography cards for outputs
             st.markdown(f"""
-                <div class="result-card">
-                    <h3 style="margin-top:0; color:#1e3a8a;">Analysis Results</h3>
-                    <p style="font-size: 1.15rem; color: #1e293b;">
-                        🎯 <strong>Predicted Condition:</strong> 
-                        <span style="color: #2563eb; font-weight: bold;">{prediction}</span>
-                    </p>
+                <div class="metric-box">
+                    <div class="metric-label">Algorithmic Diagnostic Output</div>
+                    <div class="metric-value">{prediction}</div>
                 </div>
             """, unsafe_allow_html=True)
             
-            # Display additional contextual data cleanly
             if prediction in DISEASE_INFO:
                 info = DISEASE_INFO[prediction]
-                st.info(f"📋 **Clinical Description:** {info['desc']}")
-                st.warning(f"🏢 **Recommended Specialist Routing:** Referral recommended to a **{info['specialist']}**.")
+                st.markdown(f"""
+                    <div class="info-box">
+                        <strong>Clinical Overview:</strong> {info['desc']}
+                    </div>
+                    <div class="info-box" style="border-left: 4px solid #f59e0b;">
+                        📍 <strong>Recommended Unit Routing:</strong> Referral recommended to <strong>{info['specialist']}</strong>.
+                    </div>
+                """, unsafe_allow_html=True)
             else:
-                st.info("📋 **Clinical Description:** Information profile routing details pending.")
-                st.warning("🏢 **Recommended Specialist Routing:** Consultation with a General Physician recommended for base mapping verification.")
+                st.markdown("""
+                    <div class="info-box">
+                        <strong>Clinical Overview:</strong> Conditional indicator tracking profiles pending expansion.
+                    </div>
+                """, unsafe_allow_html=True)
 
-st.markdown("---")
+st.markdown("<br><br>", unsafe_allow_html=True)
 st.caption("⚠️ **Educational Project Disclaimer:** This system functions strictly as a data-science exercise using training datasets. It does not replace professional medical evaluations, clinical triage plans, or medical advice.")
