@@ -12,52 +12,61 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Premium Material UI Clinical CSS System
-st.markdown("""
+# Custom Medical Care Background Image Link URL mapping
+BACKGROUND_IMAGE_URL = "https://githubusercontent.com"
+
+# Premium Material UI Clinical CSS System with full-screen structural image layering
+st.markdown(f"""
     <style>
-    /* Clean Minimal Soft Off-White Application Canvas */
-    .stApp {
-        background-color: #fdfdfd !important;
+    /* Full-Screen Structural Background Image configurations */
+    .stApp {{
+        background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url("{BACKGROUND_IMAGE_URL}");
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
         color: #334155 !important;
-    }
+    }}
     
     /* Modern Slate Primary Headers */
-    h1, h2, h3, h4, h5, h6 {
+    h1, h2, h3, h4, h5, h6 {{
         color: #1e293b !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         font-weight: 600 !important;
         letter-spacing: -0.25px;
-    }
+    }}
     
     /* Sub-heading typography normalization */
-    .sub-heading {
-        color: #64748b !important;
+    .sub-heading {{
+        color: #475569 !important;
         font-size: 1rem;
         margin-bottom: 2rem;
         line-height: 1.5;
-    }
+        font-weight: 500;
+    }}
     
     /* Slate Grey Minimalist Sidebar */
-    section[data-testid="stSidebar"] {
-        background-color: #f8fafc !important;
+    section[data-testid="stSidebar"] {{
+        background-color: rgba(248, 250, 252, 0.95) !important;
         border-right: 1px solid #e2e8f0;
-    }
-    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] p {
+    }}
+    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] p {{
         color: #475569 !important;
         font-weight: 500;
-    }
+    }}
 
-    /* Flat Shadowless Input Workspace Board Container */
-    div[data-testid="stVerticalBlock"] > div:has(div.stMultiSelect) {
-        background: #ffffff !important;
+    /* Semi-Transparent Glassmorphism Workspace Content Container Box */
+    div[data-testid="stVerticalBlock"] > div:has(div.stMultiSelect) {{
+        background: rgba(255, 255, 255, 0.95) !important;
         padding: 30px !important;
         border-radius: 12px !important;
         border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
-    }
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+        backdrop-filter: blur(8px);
+    }}
 
     /* Flat Teal Interactive Action Trigger Button Styling */
-    .stButton>button[data-testid="baseButton-primary"] {
+    .stButton>button[data-testid="baseButton-primary"] {{
         background-color: #0f766e !important;
         color: #ffffff !important;
         border-radius: 6px !important;
@@ -65,28 +74,28 @@ st.markdown("""
         padding: 12px 24px !important;
         font-weight: 500 !important;
         transition: background-color 0.15s ease;
-    }
-    .stButton>button[data-testid="baseButton-primary"]:hover {
+    }}
+    .stButton>button[data-testid="baseButton-primary"]:hover {{
         background-color: #115e59 !important;
-    }
+    }}
     
     /* Clean White Metric Component Blocks */
-    .clinical-metric {
-        background-color: #ffffff;
+    .clinical-metric {{
+        background-color: rgba(255, 255, 255, 0.95);
         border: 1px solid #e2e8f0;
         border-radius: 10px;
         padding: 18px;
         margin-top: 15px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.01);
-    }
-    .clinical-label {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }}
+    .clinical-label {{
         font-size: 0.75rem;
         color: #64748b;
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 0.5px;
     }
-    .clinical-value {
+    .clinical-value {{
         font-size: 1.2rem;
         color: #1e293b;
         font-weight: 600;
@@ -94,8 +103,8 @@ st.markdown("""
     }
     
     /* General Flat Content Information Bins */
-    .clinical-info-bin {
-        background-color: #f8fafc;
+    .clinical-info-bin {{
+        background-color: rgba(248, 250, 252, 0.95);
         border: 1px solid #e2e8f0;
         padding: 16px;
         border-radius: 8px;
@@ -103,8 +112,16 @@ st.markdown("""
         color: #334155;
         font-size: 0.95rem;
         line-height: 1.5;
-    }
+    }}
     </style>
+""", unsafe_allow_html=True)
+
+# CSS-based Corporate Medical Header Box (Clean background layer configuration)
+st.markdown("""
+    <div style="background-color: rgba(15, 118, 110, 0.08); padding: 25px; border-radius: 8px; text-align: left; margin-bottom: 25px; border: 1px solid rgba(15, 118, 110, 0.15);">
+        <h2 style="color: #0f766e; margin: 0; font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 700;">🏥 Clinical Informatics Intelligence Center</h2>
+        <p style="color: #115e59; margin: 6px 0 0 0; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px;">Machine Learning Statistical Inference Gateway</p>
+    </div>
 """, unsafe_allow_html=True)
 
 # Cache data loading and training structure
@@ -278,19 +295,19 @@ if model_ready:
             with col_m2:
                 st.markdown(f"""
                     <div class="clinical-metric">
-                        <div class="clinical-label">Model Certitude Score</div>
+                        <div class="clinical-label">Model Certainty Score</div>
                         <div class="clinical-value" style="color: #475569;">{confidence:.1f}%</div>
                     </div>
                 """, unsafe_allow_html=True)
             with col_m3:
                 st.markdown(f"""
                     <div class="clinical-metric">
-                        <div class="clinical-label">Triage Priority Priority</div>
+                        <div class="clinical-label">Triage Priority</div>
                         <div class="clinical-value" style="color: {risk_color}; font-size:1.1rem;">{risk_tier}</div>
                     </div>
                 """, unsafe_allow_html=True)
             
-            st.markdown(f"<p style='color: #94a3b8; font-size: 0.8rem; margin-top: 10px; text-align: right;'>⏱️ Processing pipeline speed metric: {processing_latency:.3f} ms</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color: #475569; font-size: 0.8rem; margin-top: 10px; text-align: right; font-weight: 600;'>实时处理流水线耗时 (Inference Latency): {processing_latency:.3f} ms</p>", unsafe_allow_html=True)
             
             desc_text = "Conditional indicator profiles pending engine knowledge base extension."
             spec_text = "General Physician"
@@ -306,10 +323,10 @@ if model_ready:
                 <div class="clinical-info-bin">
                     <strong>Medical Pathogen Overview:</strong> {desc_text}
                 </div>
-                <div class="clinical-info-bin" style="background-color: #fafafa;">
+                <div class="clinical-info-bin">
                     📍 <strong>Recommended Specialist Directive:</strong> Referral directed towards a <strong>{spec_text}</strong>.
                 </div>
-                <div class="clinical-info-bin" style="background-color: #fafafa;">
+                <div class="clinical-info-bin">
                     🛡️ <strong>Initial General Management Measures:</strong> {treatment_advice}
                 </div>
             """, unsafe_allow_html=True)
