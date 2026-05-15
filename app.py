@@ -12,61 +12,58 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# FIXED IMAGE SOURCE: High-reliability public URL designed for live web application background layering
-BACKGROUND_IMAGE_URL = "https://unsplash.com"
-
-# Premium Material UI Clinical CSS System with full-screen structural image layering
-st.markdown(f"""
+# Premium Material UI Clinical CSS System with embedded geometric structure grids
+st.markdown("""
     <style>
-    /* Full-Screen Structural Background Image configurations */
-    .stApp {{
-        background-image: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), url("{BACKGROUND_IMAGE_URL}");
-        background-size: cover !important;
+    /* Pure CSS Medical Blueprint / Technical Grid Background (Zero-dependency, bulletproof) */
+    .stApp {
+        background-color: #f8fafc !important;
+        background-image: 
+            linear-gradient(rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+        background-size: 20px 20px !important;
         background-position: center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: fixed !important;
         color: #334155 !important;
-    }}
+    }
     
     /* Modern Slate Primary Headers */
-    h1, h2, h3, h4, h5, h6 {{
+    h1, h2, h3, h4, h5, h6 {
         color: #1e293b !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         font-weight: 600 !important;
         letter-spacing: -0.25px;
-    }}
+    }
     
     /* Sub-heading typography normalization */
-    .sub-heading {{
+    .sub-heading {
         color: #475569 !important;
         font-size: 1rem;
         margin-bottom: 2rem;
         line-height: 1.5;
         font-weight: 500;
-    }}
+    }
     
-    /* Slate Grey Minimalist Sidebar */
-    section[data-testid="stSidebar"] {{
+    /* Slate Grey Minimalist Sidebar with semi-transparent blending */
+    section[data-testid="stSidebar"] {
         background-color: rgba(248, 250, 252, 0.95) !important;
         border-right: 1px solid #e2e8f0;
-    }}
-    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] p {{
+    }
+    section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] p {
         color: #475569 !important;
         font-weight: 500;
-    }}
+    }
 
-    /* Semi-Transparent Glassmorphism Workspace Content Container Box */
-    div[data-testid="stVerticalBlock"] > div:has(div.stMultiSelect) {{
-        background: rgba(255, 255, 255, 0.95) !important;
+    /* Glassmorphism Workspace Content Container Box */
+    div[data-testid="stVerticalBlock"] > div:has(div.stMultiSelect) {
+        background: #ffffff !important;
         padding: 30px !important;
         border-radius: 12px !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
-        backdrop-filter: blur(8px);
-    }}
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.02) !important;
+    }
 
     /* Flat Teal Interactive Action Trigger Button Styling */
-    .stButton>button[data-testid="baseButton-primary"] {{
+    .stButton>button[data-testid="baseButton-primary"] {
         background-color: #0f766e !important;
         color: #ffffff !important;
         border-radius: 6px !important;
@@ -74,53 +71,53 @@ st.markdown(f"""
         padding: 12px 24px !important;
         font-weight: 500 !important;
         transition: background-color 0.15s ease;
-    }}
-    .stButton>button[data-testid="baseButton-primary"]:hover {{
+    }
+    .stButton>button[data-testid="baseButton-primary"]:hover {
         background-color: #115e59 !important;
-    }}
+    }
     
     /* Clean White Metric Component Blocks */
-    .clinical-metric {{
-        background-color: rgba(255, 255, 255, 0.95);
-        border: 1px solid #e2e8f0;
+    .clinical-metric {
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
         border-radius: 10px;
         padding: 18px;
         margin-top: 15px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-    }}
-    .clinical-label {{
+        box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+    }
+    .clinical-label {
         font-size: 0.75rem;
         color: #64748b;
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 0.5px;
-    }}
-    .clinical-value {{
+    }
+    .clinical-value {
         font-size: 1.2rem;
         color: #1e293b;
         font-weight: 600;
         margin-top: 4px;
-    }}
+    }
     
     /* General Flat Content Information Bins */
-    .clinical-info-bin {{
-        background-color: rgba(248, 250, 252, 0.95);
-        border: 1px solid #e2e8f0;
+    .clinical-info-bin {
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
         padding: 16px;
         border-radius: 8px;
         margin-top: 12px;
         color: #334155;
         font-size: 0.95rem;
         line-height: 1.5;
-    }}
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # CSS-based Corporate Medical Header Box (Clean background layer configuration)
 st.markdown("""
-    <div style="background-color: rgba(15, 118, 110, 0.08); padding: 25px; border-radius: 8px; text-align: left; margin-bottom: 25px; border: 1px solid rgba(15, 118, 110, 0.15);">
-        <h2 style="color: #0f766e; margin: 0; font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 700;">🏥 Clinical Informatics Intelligence Center</h2>
-        <p style="color: #115e59; margin: 6px 0 0 0; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px;">Machine Learning Statistical Inference Gateway</p>
+    <div style="background-color: #ffffff; padding: 25px; border-radius: 8px; text-align: left; margin-bottom: 25px; border: 1px solid #cbd5e1; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <h2 style="color: #0f766e; margin: 0; font-family: 'Inter', sans-serif; font-size: 1.4rem; font-weight: 700;">🏥 Clinical Informatics Intelligence Center</h2>
+        <p style="color: #475569; margin: 6px 0 0 0; font-size: 0.9rem; font-weight: 400; letter-spacing: 0.5px;">Machine Learning Statistical Inference Gateway</p>
     </div>
 """, unsafe_allow_html=True)
 
@@ -161,7 +158,7 @@ DISEASE_INFO = {
     "Paralysis (brain hemorrhage)": {"desc": "Loss of muscle function in part of your body, caused by bleeding inside the brain tissue.", "specialist": "Neurologist / Neurosurgeon", "treatment": "Immediate emergency room evaluations required, establish supportive physical therapies."},
     "Jaundice": {"desc": "A yellowing of the skin and eyes caused by high levels of bilirubin.", "specialist": "Hepatologist / Gastroenterologist", "treatment": "Prioritize rest, eliminate completely all alcoholic pathways, monitor liver functions."},
     "Malaria": {"desc": "A disease caused by a plasmodium parasite, transmitted by the bite of infected mosquitoes.", "specialist": "Infectious Disease Specialist", "treatment": "Seek immediate antimalarial pharmacotherapy, monitor hydration levels carefully."},
-    "Chicken pox": {"desc": "A highly contagious viral infection causing an itchy, blister-like rash on the skin.", "specialist": "General Physician / Pediatrician", "treatment": "Rest, maintain clean skin, use anti-itch lotions, monitor internal body temperature flags."},
+    "Chicken pox": {"desc": "A highly contagious viral infection causing an itchy, blister-like rash on the skin.", "specialist": "General Physician / Pediatrician", "treatment": "Rest, maintain clean skin, use anti-inch lotions, monitor internal body temperature flags."},
     "Dengue": {"desc": "A mosquito-borne viral disease occurring in tropical and subtropical areas.", "specialist": "Infectious Disease Specialist", "treatment": "Maximize clean hydration intake profiles, take paracetamol for tracking pain, avoid ibuprofen options."},
     "Typhoid": {"desc": "A bacterial infection spread through contaminated food and water.", "specialist": "Infectious Disease Specialist", "treatment": "Complete complete antibiotic prescription metrics, consume fully pasteurized foods."},
     "Common Cold": {"desc": "A common viral infection of the nose and throat.", "specialist": "General Physician", "treatment": "Maintain vocal rest, ingest warm fluid configurations, track respiratory markers."},
