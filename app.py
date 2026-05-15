@@ -155,7 +155,7 @@ DISEASE_INFO = {
     "Impetigo": {"desc": "A highly contagious skin infection that causes sores, mainly around the nose and mouth.", "specialist": "Dermatologist / General Physician"}
 }
 
-# New Feature 1: Demographic Context Sidebar Panel
+# Demographic Context Sidebar Panel
 st.sidebar.header("📋 Patient Demographic Registry")
 patient_age = st.sidebar.slider("Patient Age:", min_value=1, max_value=100, value=30)
 patient_gender = st.sidebar.selectbox("Biological Sex:", ["Male", "Female", "Other"])
@@ -196,14 +196,18 @@ if model_ready:
                     idx = features.index(raw_name)
                     input_data[idx] = 1
             
-            # Predict core condition text
-            prediction_array = model.predict([input_data])
-            prediction = str(prediction_array[0]).strip()
+            # Predict target string safely
+            prediction = str(model.predict([input_data])[0]).strip()
             
-            # Model Certainty Score Calculations
-            probabilities = model.predict_proba([input_data])[0]
-            class_idx = np.where(model.classes_ == prediction)[0][0]
-            confidence = probabilities[class_idx] * 100
+            # Fixed Probability Evaluation Logic Block
+            probabilities = model.predict_proba([input_data]).flatten()
+            classes = [str(c).strip() for c in model.classes_]
+            
+            if prediction in classes:
+                class_idx = classes.index(prediction)
+                confidence = probabilities[class_idx] * 100
+            else:
+                confidence = 0.0
             
             # Symptom Load Risk Tier Estimation Evaluation
             symptom_count = len(selected_clean)
@@ -258,17 +262,17 @@ if model_ready:
                 </div>
             """, unsafe_allow_html=True)
 
-            # New Feature 2: Dynamic Age/Gender Prescription Contraindication Flags
+            # Dynamic Age/Gender Prescription Contraindication Flags
             if patient_age < 12 and "Reaction" in prediction:
                 st.error("🚨 **Pediatric Warning Indicator:** Selected profile markers display hyper-sensitivity indicators to conventional chemical therapies. Avoid self-treatment.")
             elif patient_age > 65:
                 st.warning("⚠️ **Geriatric Metric Warning:** Clearance rates for primary drug pathways are slowed in patients over 65. Clinical review is advised.")
 
-            # Top Probable Variant Distributions Chart
+            # Fixed Chart and Alternative Index Array Sorting Logic Block
             st.markdown("<br><h5>Top Probable Variant Distributions</h5>", unsafe_allow_html=True)
             top_indices = np.argsort(probabilities)[::-1][:3]
             
-            chart_conditions = [model.classes_[i] for i in top_indices]
+            chart_conditions = [classes[i] for i in top_indices]
             chart_scores = [probabilities[i] * 100 for i in top_indices]
             
             chart_data = pd.DataFrame({
@@ -277,15 +281,16 @@ if model_ready:
             })
             st.bar_chart(chart_data, x="Condition Class", y="Confidence Match Score (%)", color="#0284c7")
 
-            # New Feature 3: Symptom Intersection Correlation Matrix Table Layout
+            # Alternative Statistical Variant Index
             st.markdown("<h5>Alternative Statistical Variant Index</h5>", unsafe_allow_html=True)
+            secondary_indices = np.argsort(probabilities)[::-1][1:6]
             matrix_df = pd.DataFrame({
-                "Secondary Variant Condition": [model.classes_[i] for i in np.argsort(probabilities)[::-1][1:6]],
-                "Statistical Probability Match": [f"{probabilities[i] * 100:.2f}%" for i in np.argsort(probabilities)[::-1][1:6]]
+                "Secondary Variant Condition": [classes[i] for i in secondary_indices],
+                "Statistical Probability Match": [f"{probabilities[i] * 100:.2f}%" for i in secondary_indices]
             })
             st.dataframe(matrix_df, use_container_width=True, hide_index=True)
 
-            # New Feature 4: Automated Medical Summary Document Construction Report Downloader
+            # Automated Medical Summary Document Construction Report Downloader
             report_content = f"""# AI CLINICAL PORTAL DIAGNOSTIC REPORT
 ## CONFIDENTIAL WORKSPACE EVALUATION LOG
 
