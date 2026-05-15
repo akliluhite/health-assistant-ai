@@ -20,9 +20,13 @@ st.set_page_config(
 # Put caregiver_bg.jpg in same folder as app.py
 # =====================================================
 def get_base64(file_path):
-    with open(file_path, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
+    try:
+        with open(file_path, "rb") as f:
+            data = f.read()
+        return base64.b64encode(data).decode()
+    except FileNotFoundError:
+        # Fallback to empty string if background image is missing
+        return ""
 
 img = get_base64("caregiver_bg.jpg")
 
@@ -249,7 +253,6 @@ st.markdown(
 # =====================================================
 @st.cache_resource
 def load_and_train_model():
-
     data = pd.read_csv("Training.csv")
 
     if "Unnamed: 133" in data.columns:
@@ -261,45 +264,41 @@ def load_and_train_model():
     model = RandomForestClassifier(random_state=42)
     model.fit(X.values, y)
 
-    return model, list(X.columns)
+    # Sanitize feature names for presentation (replace underscores)
+    feature_mapping = {f: f.replace('_', ' ').title() for f in X.columns}
+    return model, X.columns, feature_mapping
 
 try:
-    model, features = load_and_train_model()
+    model, raw_features, clean_feature_map = load_and_train_model()
     model_ready = True
-
 except Exception:
-    st.error("Training.csv file not found.")
+    st.error("Training.csv file not found or corrupted.")
     model_ready = False
 
 # =====================================================
 # DISEASE DATABASE
 # =====================================================
 DISEASE_INFO = {
-
     "Fungal infection": {
         "desc": "A fungal skin infection affecting warm and moist areas.",
         "specialist": "Dermatologist",
         "treatment": "Keep skin dry and apply antifungal cream."
     },
-
     "Allergy": {
         "desc": "Immune system reaction caused by allergens.",
         "specialist": "Allergist",
         "treatment": "Avoid allergens and use antihistamines."
     },
-
     "Diabetes ": {
         "desc": "A disease causing high blood sugar levels.",
         "specialist": "Endocrinologist",
         "treatment": "Monitor blood sugar and follow proper diet."
     },
-
     "Migraine": {
         "desc": "A neurological condition causing severe headaches.",
         "specialist": "Neurologist",
         "treatment": "Rest in dark rooms and avoid stress."
     },
-
     "Hypertension ": {
         "desc": "High blood pressure condition.",
         "specialist": "Cardiologist",
@@ -314,272 +313,108 @@ if "history_log" not in st.session_state:
     st.session_state.history_log = []
 
 # =====================================================
-# SIDEBAR
-# =====================================================
-st.sidebar.header("Patient Entry Profiles")
-
-patient_age = st.sidebar.slider(
-    "Patient Age",
-    min_value=1,
-    max_value=100,
-    value=30
-)
-
-patient_gender = st.sidebar.selectbox(
-    "Biological Sex",
-    ["Male", "Female", "Other"]
-)
-
-st.sidebar.markdown("---")
-
-symptom_duration = st.sidebar.selectbox(
-    "Symptoms Persisting For",
-    [
-        "Less than 24 Hours",
-        "1 to 3 Days",
-        "More than a Week"
-    ]
-)
-
-# =====================================================
-# TITLE
+# MAIN USER INTERFACE
 # =====================================================
 st.title("AI Clinical Diagnosis Portal")
+st.markdown('<p class="sub-heading">Isolate specific patient symptom indicators to compute machine learning prediction pathways.</p>', unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <div class="sub-heading">
-        Isolate specific patient symptom indicators to compute machine learning prediction pathways.
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# =====================================================
-# MAIN APP
-# =====================================================
 if model_ready:
-
-    clean_features = [
-        f.replace("_", " ").title()
-        for f in features
-    ]
-
-    if "symptom_key" not in st.session_state:
-        st.session_state.symptom_key = 0
-
-    st.markdown('<div class="main-card">', unsafe_allow_html=True)
-
-    selected_clean = st.multiselect(
-        "Identify Patient Manifestations",
-        clean_features,
-        placeholder="Select symptoms...",
-        key=f"symptoms_{st.session_state.symptom_key}"
+    # Sidebar Configuration for inputs
+    st.sidebar.header("Patient Profiles & Symptoms")
+    
+    # Allow mapping presentation titles back to original dataframe column keys
+    reverse_feature_map = {v: k for k, v in clean_feature_map.items()}
+    display_options = sorted(list(clean_feature_map.values()))
+    
+    selected_clean_symptoms = st.sidebar.multiselect(
+        "Select Manifested Symptoms:",
+        options=display_options,
+        help="Choose all symptoms currently expressed by the individual."
     )
 
-    col1, col2 = st.columns(2)
+    # Actions Container
+    st.sidebar.markdown("---")
+    compute_btn = st.sidebar.button("Compute Analysis Pathway", type="primary")
+    clear_btn = st.sidebar.button("Clear Diagnostic History")
 
-    with col1:
-        submit_btn = st.button(
-            "Run Diagnostic Analysis",
-            type="primary"
-        )
+    if clear_btn:
+        st.session_state.history_log = []
+        st.rerun()
 
-    with col2:
-        if st.button("Clear Input"):
-            st.session_state.symptom_key += 1
-            st.rerun()
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # =====================================================
-    # PREDICTION
-    # =====================================================
-    if submit_btn:
-
-        if not selected_clean:
-
-            st.warning("Please select symptoms.")
-
+    # Main Workflow Engine
+    st.markdown('<div class="main-card">', unsafe_allow_html=True)
+    st.subheader("Diagnostic Engine Evaluation")
+    
+    if compute_btn:
+        if not selected_clean_symptoms:
+            st.warning("Please choose one or more symptoms from the sidebar configuration panel before requesting a prediction.")
         else:
+            # Build binary vector mapping to dataset columns
+            input_vector = np.zeros(len(raw_features))
+            for sym in selected_clean_symptoms:
+                raw_key = reverse_feature_map[sym]
+                idx = list(raw_features).index(raw_key)
+                input_vector[idx] = 1
 
-            start_time = time.perf_counter()
-
-            input_matrix = np.zeros((1, len(features)))
-
-            for clean_sym in selected_clean:
-
-                raw_name = clean_sym.lower().replace(" ", "_")
-
-                if raw_name in features:
-
-                    idx = features.index(raw_name)
-
-                    input_matrix[0, idx] = 1
-
-            prediction_raw = model.predict(input_matrix)
-
-            prediction = str(prediction_raw[0]).strip()
-
-            probabilities = model.predict_proba(input_matrix).flatten()
-
-            classes = [str(c).strip() for c in model.classes_]
-
-            if prediction in classes:
-
-                class_idx = classes.index(prediction)
-
+            # Execute Statistical Inference
+            with st.spinner("Processing network weights..."):
+                time.sleep(0.6)  # UI feedback delay
+                prediction = model.predict([input_vector])[0]
+                probabilities = model.predict_proba([input_vector])[0]
+                
+                class_idx = list(model.classes_).index(prediction)
                 confidence = probabilities[class_idx] * 100
 
-            else:
-                confidence = 0
-
-            latency = (time.perf_counter() - start_time) * 1000
-
-            # =====================================================
-            # RISK LEVEL
-            # =====================================================
-            symptom_count = len(selected_clean)
-
-            if symptom_count <= 2:
-
-                risk = "Mild"
-                risk_color = "#0f766e"
-
-            elif symptom_count <= 5:
-
-                risk = "Moderate"
-                risk_color = "#d97706"
-
-            else:
-
-                risk = "High Risk"
-                risk_color = "#dc2626"
-
-            # =====================================================
-            # METRICS
-            # =====================================================
-            m1, m2, m3 = st.columns(3)
-
-            with m1:
-
-                st.markdown(f"""
-                <div class="clinical-metric">
-
-                    <div class="clinical-label">
-                        Diagnosis
-                    </div>
-
-                    <div class="clinical-value" style="color:#0f766e;">
-                        {prediction}
-                    </div>
-
-                </div>
-                """, unsafe_allow_html=True)
-
-            with m2:
-
-                st.markdown(f"""
-                <div class="clinical-metric">
-
-                    <div class="clinical-label">
-                        Confidence
-                    </div>
-
-                    <div class="clinical-value">
-                        {confidence:.1f}%
-                    </div>
-
-                </div>
-                """, unsafe_allow_html=True)
-
-            with m3:
-
-                st.markdown(f"""
-                <div class="clinical-metric">
-
-                    <div class="clinical-label">
-                        Risk Level
-                    </div>
-
-                    <div class="clinical-value" style="color:{risk_color};">
-                        {risk}
-                    </div>
-
-                </div>
-                """, unsafe_allow_html=True)
-
-            # =====================================================
-            # DISEASE DETAILS
-            # =====================================================
-            desc = "No information available."
-            specialist = "General Physician"
-            treatment = "Consult a doctor."
-
-            if prediction in DISEASE_INFO:
-
-                desc = DISEASE_INFO[prediction]["desc"]
-                specialist = DISEASE_INFO[prediction]["specialist"]
-                treatment = DISEASE_INFO[prediction]["treatment"]
-
-            st.markdown(f"""
-            <div class="clinical-info-bin">
-
-                <strong>Medical Overview:</strong>
-
-                <br><br>
-
-                {desc}
-
-            </div>
-
-            <div class="clinical-info-bin">
-
-                👨‍⚕️ <strong>Recommended Specialist:</strong>
-
-                {specialist}
-
-            </div>
-
-            <div class="clinical-info-bin">
-
-                🛡️ <strong>Suggested Treatment:</strong>
-
-                <br><br>
-
-                {treatment}
-
-            </div>
-            """, unsafe_allow_html=True)
-
-            # =====================================================
-            # CHART
-            # =====================================================
-            st.markdown("### Prediction Statistics")
-
-            top_indices = np.argsort(probabilities)[::-1][:3]
-
-            chart_data = pd.DataFrame({
-                "Condition": [classes[i] for i in top_indices],
-                "Confidence (%)": [
-                    probabilities[i] * 100
-                    for i in top_indices
-                ]
+            # Log execution events into history registry
+            timestamp = time.strftime("%H:%M:%S")
+            st.session_state.history_log.insert(0, {
+                "Time": timestamp,
+                "Identified Classification": prediction,
+                "Confidence Interval": f"{confidence:.1f}%",
+                "Symptom Count": len(selected_clean_symptoms)
             })
 
-            st.bar_chart(
-                chart_data,
-                x="Condition",
-                y="Confidence (%)"
-            )
+            # Layout metrics side-by-side using card syntax
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                <div class="clinical-metric">
+                    <div class="clinical-label">Inferred Classification Prognosis</div>
+                    <div class="clinical-value">{prediction}</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with col2:
+                st.markdown(f"""
+                <div class="clinical-metric">
+                    <div class="clinical-label">Statistical Weight Confidence</div>
+                    <div class="clinical-value">{confidence:.1f}%</div>
+                </div>
+                """, unsafe_allow_html=True)
 
-# =====================================================
-# FOOTER
-# =====================================================
-st.markdown("<br><br>", unsafe_allow_html=True)
+            # Extract detailed profiles if available in database mapping
+            disease_profile = DISEASE_INFO.get(prediction, DISEASE_INFO.get(prediction.strip()))
+            
+            if disease_profile:
+                st.markdown(f"""
+                <div class="clinical-info-bin">
+                    <strong>Pathology Profile:</strong> {disease_profile['desc']}<br><br>
+                    <strong>Target Department Referral:</strong> {disease_profile['specialist']}<br>
+                    <strong>Recommended Actions:</strong> {disease_profile['treatment']}
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div class="clinical-info-bin">
+                    <strong>Pathology Profile:</strong> Custom clinical profile undefined in base database maps. Consult external health references.
+                </div>
+                """, unsafe_allow_html=True)
+    else:
+        st.info("System idling. Configure symptoms on the left sidebar framework and execute computation.")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.caption(
-    "⚠️ Educational Project Disclaimer: "
-    "This system is for educational purposes only "
-    "and does not replace professional medical diagnosis."
-)
+    # History Data Grid Logs
+    if st.session_state.history_log:
+        st.markdown("### Real-Time Session Execution Logs")
+        log_df = pd.DataFrame(st.session_state.history_log)
+        st.dataframe(log_df, use_container_width=True)
