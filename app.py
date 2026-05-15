@@ -10,8 +10,8 @@ st.set_page_config(page_title="AI Medical Assistant", layout="centered")
 @st.cache_resource
 def load_and_train_model():
     # Fetch your original training file directly from your GitHub repository path
-    url = "https://githubusercontent.com"
-    data = pd.read_csv(url)
+    data = pd.read_csv("Training.csv")
+
     
     # Remove unneeded empty tracking columns if present in the data structure
     if "Unnamed: 133" in data.columns:
